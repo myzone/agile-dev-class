@@ -1,9 +1,6 @@
-#!/usr/bin/env node
-
 /**
  * Module dependencies.
  */
-
 var app = require('../app');
 var debug = require('debug')('DegreeOverview:server');
 var http = require('http');
@@ -12,7 +9,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '8080');
 app.set('port', port);
 
 /**
@@ -25,7 +22,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, '0.0.0.0');
 server.on('error', onError);
 server.on('listening', onListening);
 
