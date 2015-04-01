@@ -12,3 +12,15 @@ Docker usage
 * run `docker run -d -p 8080:8080 -v /agile-dev-class/src:/src agile-dev-class-image` to run container with our image
 
 Some of these commands are also specified in local-deploy.sh file.
+
+Local deploy (without docker)
+======================
+* install Node.JS
+    **Windows, mac os, linux:** https://nodejs.org/download
+* install MongoDB
+    **Windows, mac os, linux:** https://www.mongodb.org/downloads
+* in command line run **mongod.exe** from root *MongoDB/Server/3.0/bin*
+* create in root C: (Windows) new folder **data/db**
+* clone repository
+* run `cd src/js && npm install && node createDB.js && npm start` (node should be in Path environment)
+* localhost:8080 in browser
