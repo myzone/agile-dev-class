@@ -1,0 +1,3 @@
+@echo off
+echo Initializing boot2docker...
+boot2docker.exe init

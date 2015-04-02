@@ -1,14 +1,9 @@
 DegreeOverview
 ======================
 
-Docker usage
+Развертывание, запуск и остановка проекта
 ======================
-* install [boot2docker](http://boot2docker.io/) according to you host OS. __note: be careful with its installation, it may cause a lot of strange problems__.
-* setup Virtual Box's folder sharing. you should share your project root.
-* connect to boot2docker VM via `boot2docker ssh`
-* run `mkdir /agile-dev-class` and `sudo mount -t vboxsf __your_shared_folder_name__ /agile-dev-class` to connect you host FS to VM's one.
-* run `cd /agile-dev-class`
-* run `docker build -t agile-dev-class-image` to build our container image according to our `Dockerfile`
-* run `docker run -d -p 8080:8080 -v /agile-dev-class/src:/src agile-dev-class-image` to run container with our image
-
-Some of these commands are also specified in local-deploy.sh file.
+* запустите init.cmd для инициализации boot2docker. Будет создана и настроена новая вирутальная машина. __note: Этот шаг выполняется один раз.
+* используйте start.cmd для запуска проекта. __note: Первый запуск может занять длительное время в зависимости от скорости интернет подключения. При первом запуске boot2docker будет создавать образ docker контейнера. Для этого потребуется загрузка файлов из сети интернет.
+* для завершения работы проекта необходимо выполнить stop.cmd
+* для презапуска проекта выполните restart.cmd
