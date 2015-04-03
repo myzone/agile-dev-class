@@ -1,11 +1,8 @@
 FROM base/archlinux
 
-#update
+#update & utilitiess
 RUN pacman -Syy --noconfirm
-
-#volume
-VOLUME /src
-VOLUME /logs
+RUN pacman -S --noconfirm zsh
 
 #mongo setup
 RUN pacman -S --noconfirm mongodb
@@ -14,16 +11,24 @@ RUN mkdir /db
 #nodejs setup
 RUN pacman -S --noconfirm nodejs
 
-RUN touch todo
-RUN echo "cd /src/js" >> todo
+#volumes
+VOLUME /src
+VOLUME /logs
 
-RUN echo "rm -rf logs " >> todo
-RUN echo "mkdir logs" >> todo
+#start up
+RUN touch /todo
+RUN echo 'LAUNCH_TIME=`date +"%H-%M-%S_%m-%d-%y"`' >> /todo
+RUN echo 'LOGS_ROOT="/logs/$LAUNCH_TIME"' >> /todo
 
-RUN echo "npm install . --save-dev --no-bin-links 2>&1 1>/logs/npm.log" >> todo
+RUN echo 'cd /src/js' >> /todo
+RUN echo 'mkdir $LOGS_ROOT' >> /todo
 
-RUN echo "mongod --dbpath /db --port 27017 1>/logs/mongo.log.out 2>/logs/mongo.err.log &" >> todo
-RUN echo "node createDB.js 1>/logs/node-createDB.log.out 2>/logs/node-createDB.err.log" >> todo
-RUN echo "node bin/www.js 1>/logs/node.log.out 2>/logs/node.err.log" >> todo
+RUN echo 'npm install . --save-dev --no-bin-links 2>&1 1>$LOGS_ROOT/npm.log' >> /todo
+RUN echo 'npm install -g nodemon 2>&1 1>$LOGS_ROOT/npm-nodemon.log' >> /todo
 
-ENTRYPOINT ["/bin/bash", "todo"]
+RUN echo 'mongod --dbpath /db --port 27017 1>$LOGS_ROOT/mongo.out.log 2>$LOGS_ROOT/mongo.err.log &' >> /todo
+RUN echo 'node createDB.js 1>$LOGS_ROOT/node-createDB.out.log 2>$LOGS_ROOT/node-createDB.err.log' >> /todo
+RUN echo '/usr/bin/nodemon -w . bin/www.js 1>$LOGS_ROOT/node.out.log 2>$LOGS_ROOT/node.err.log' >> /todo
+#RUN echo 'node bin/www.js 1>$LOGS_ROOT/node.out.log 2>$LOGS_ROOT/node.err.log' >> /todo
+
+ENTRYPOINT ["/bin/bash", "/todo"]
