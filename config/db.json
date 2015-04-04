@@ -1,0 +1,75 @@
+{
+	"degrees": [
+		{
+			"_id": "id",
+			"name": "Degree name",
+			"description": "Degree description",
+			"courses": [
+				{
+					"_id": "id",
+					"name": "Course name"
+				}
+			]
+		}
+	],
+	"courses": [
+		{
+			"_id": "id",
+			"name": "Course name",
+			"description": "Course description",
+			"lecturer": {
+				"userId": "id",
+				"name": "Lecturer"
+			},
+			"topics": [
+				{
+					"originId": "id",
+					"name": "Topic name",
+					"description": "Topic description"
+				}
+			],
+			"milestones": [
+				{
+					"_id": "id",
+					"name": "Milestone name",
+					"description": "Milestone description"
+				}
+			]
+		}
+	],
+	"topics": [
+		{
+			"_id": "id",
+			"name": "Topic name",
+			"description": "Topic description"
+		}
+	],
+	"coverage": [
+		{
+			"_id": "id",
+			"topicId": "id",
+			"milestoneId": "id",
+			"weight": "0.5"
+		}
+	],
+	"users": [
+		{
+			"_id": "id",
+			"name": "Vassya Pupkin",
+			"role": "Student",
+			"passwordHash": "hash",
+			"salt": "alalala"
+		}
+	],
+	"scores": [
+		{
+			"_id": "id",
+			"milestoneId": "id",
+			"student": {
+				"userId": "id",
+				"name": "Vassya Pupkin"
+			},
+			"value": "95"
+		}
+	]
+}

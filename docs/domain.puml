@@ -1,0 +1,75 @@
+@startuml
+
+abstract class User {
+}
+
+class Lecturer {
+    name: String
+}
+
+class Student {
+    name: String
+}
+
+class Score {
+    student: Student
+    milestone: Milestone
+    value: Mark
+}
+
+class Achievement {
+    topic: Topic
+    course: Course
+    score: Score
+}
+
+class Course {
+    name: String
+    description: String
+    lecturer: Lecturer
+    income: Topic[]
+    milestones: Milestone[]
+}
+
+class Milestone {
+    name: String
+    description: String
+}
+
+class Cover {
+    milestone: Milestone
+    topic: Topic
+    (?) weight
+    ---
+}
+
+class Topic {
+    name: String
+    description: String
+}
+
+class Degree {
+    name: String
+    courses: Course[]
+}
+
+User <|-- Lecturer
+User <|-- Student
+
+Score o--> Student
+Score o--> Milestone
+
+Achievement o--> Topic
+Achievement o--> Course
+Achievement o--> Score
+
+Cover o--> Topic
+Cover o--> Milestone
+
+Degree o--> Course
+
+Course o--> Lecturer
+Course o--> Topic
+Course *--> Milestone
+
+@enduml
