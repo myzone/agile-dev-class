@@ -1,11 +1,11 @@
 FROM base/archlinux
 
 #update & utilitiess
-RUN pacman -Syy --noconfirm
+RUN pacman -Syyy --noconfirm
 RUN pacman -S --noconfirm zsh
 
 #mongo setup
-RUN pacman -S --noconfirm mongodb
+RUN pacman -S --noconfirm community/mongodb
 RUN mkdir /db
 
 #nodejs setup
