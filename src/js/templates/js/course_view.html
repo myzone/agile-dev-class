@@ -1,0 +1,11 @@
+<div class="well">
+    <h1><%= course.name %></h1>
+    <h3>Income</h3>
+    <% _.each(course.topics, function(topic){ %>
+    <span class="badge"><%= topic.name %></span>
+    <% }); %>
+    <h3>Milestones</h3>
+    <% _.each(course.milestones, function(milestone){ %>
+    <span class="badge"><%= milestone.name %></span>
+    <% }); %>
+</div>
