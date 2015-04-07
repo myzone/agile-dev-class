@@ -1,6 +1,22 @@
 var app = {
     Collections: {}
 };
+// we need to define model before the collection
+var CourseModel = Backbone.Model.extend({
+    defaults: {
+        name: ''
+    },
+    initialize: function(){
+        this.view = new CourseView({model: this });
+    }
+});
+
+var CourseView = Backbone.View.extend({
+    template: _.template($('#course_view').html()),
+    initialize: function(){
+       this.setElement(this.template({ course: this.model.toJSON() }) );
+   } 
+});
 
 var CoursesCollection = Backbone.Collection.extend({
     url: function(){ 
@@ -54,22 +70,6 @@ var CoursesListView = Backbone.View.extend({
         this.collection.searchStr = searchVal;
         this.collection.fetch({reset: true});
     }
-});
-
-var CourseModel = Backbone.Model.extend({
-    defaults: {
-        name: ''
-    },
-    initialize: function(){
-        this.view = new CourseView({model: this });
-    }
-});
-
-var CourseView = Backbone.View.extend({
-    template: _.template($('#course_view').html()),
-    initialize: function(){
-       this.setElement(this.template({ course: this.model.toJSON() }) );
-   } 
 });
 
 
