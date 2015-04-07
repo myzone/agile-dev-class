@@ -1,48 +1,38 @@
 var app = {
-    Models: {},
-    Views: {},
     Collections: {}
 };
-
-var CourseModel = Backbone.Model.extend({
-    defaults: {
-        name: ''
-    },
-    initialize: function(){
-        this.view = new CourseView({model: this });
-    }
-});
-
-var CourseView = Backbone.View.extend({
-    template: _.template($('#course_view').html()),
-    initialize: function(){
-       this.setElement(this.template({ course: this.model.toJSON() }) );
-   } 
-});
 
 var CoursesCollection = Backbone.Collection.extend({
     url: function(){ 
         return '/v1/courses?search='+this.searchStr+'&inTopics=true&inMilestones=true';
     },
-    model: CourseModel,
+    model: CourseModel, //define class of models in collection
     initialize: function(){ 
+        
+        // by default show all courses
         this.searchStr = '';
+        
+        // set view of collection
         this.view = new CoursesListView({collection: this}); 
+        
+        // bind render of model on reset collection
         this.on('reset',this.view.render, this.view);
+        
+        // fetch data from url with reset
         this.fetch({reset: true});
     }
 });
 
+// view of collection
 var CoursesListView = Backbone.View.extend({
-    el: $('#content'), // DOM элемент widget'а
+    el: $('#content'), // DOM-element of widget'а
     
     events: { 
-        'click #search_courses_btn': 'searchCourses',
-//        'change #search_courses_input': 'updateAttr'
+        'click #search_courses_btn': 'searchCourses'
     },
         
     initialize: function() {
-        this.$list = $('#list',this.$el);
+        this.$list = $('#list',this.$el); // set $list where will be rendered search results (inside $el)
     },
 
     render: function () {            
@@ -66,6 +56,23 @@ var CoursesListView = Backbone.View.extend({
     }
 });
 
+var CourseModel = Backbone.Model.extend({
+    defaults: {
+        name: ''
+    },
+    initialize: function(){
+        this.view = new CourseView({model: this });
+    }
+});
+
+var CourseView = Backbone.View.extend({
+    template: _.template($('#course_view').html()),
+    initialize: function(){
+       this.setElement(this.template({ course: this.model.toJSON() }) );
+   } 
+});
+
+
 var Router = Backbone.Router.extend({
     
     routes: {
@@ -80,11 +87,11 @@ var Router = Backbone.Router.extend({
     },
     
     index: function(){
+        // костыль пока (пока нет view у sidebar)
         $('ul.sidebar-nav li a#a_f1').addClass('bg-primary').parent().siblings().find('a.bg-primary').removeClass('bg-primary');
         if(app.Collections.courses_collection){
-            app.Collections.courses_collection.view.notFound();
+            app.Collections.courses_collection.view.notFound(); // заглушка пока
         }
-        console.log('indexdd');
     },
     
     course_search: function(){
@@ -99,9 +106,8 @@ var Router = Backbone.Router.extend({
     function2: function(){
         $('ul.sidebar-nav li a#a_f2').addClass('bg-primary').parent().siblings().find('a.bg-primary').removeClass('bg-primary');
         if(app.Collections.courses_collection){
-            app.Collections.courses_collection.view.notFound();
+            app.Collections.courses_collection.view.notFound(); 
         }
-        console.log('func2');
     },
     
     function3: function(){
@@ -109,8 +115,8 @@ var Router = Backbone.Router.extend({
         if(app.Collections.courses_collection){
             app.Collections.courses_collection.view.notFound();
         }
-        console.log('func3');
     }
 });
+
 app.router = new Router();
 
