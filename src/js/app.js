@@ -75,7 +75,8 @@ app.use(express.static(path.join(__dirname, 'public')));
  */
 var handlers = {
     courses: require('./handlers/coursesHandler'),
-    degrees: require('./handlers/degreesHandler')
+    degrees: require('./handlers/degreesHandler'),
+    topics: require('./handlers/topicsHandler')
 };
 
 routes.setup(app, handlers);

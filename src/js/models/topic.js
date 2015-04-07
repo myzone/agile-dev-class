@@ -10,8 +10,9 @@ var _ = require('underscore');
 module.exports = _.once( function (mongoose) {
 
     var TopicSchema = new mongoose.Schema({
-        name: { type: String, required: true }
-    });
+        name: { type: String, required: true },
+        description: { type: String, required: true }
+    }, { collection: 'topics' });
 
     /**
      * Export topic schema and data model.

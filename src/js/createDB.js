@@ -339,21 +339,33 @@ MongoClient.connect(url, function(err, db) {
         name: 'Software engineering',
         courses: []
     };
-
+    var allTopics = [];
     _.each( courses, function( course ){
+        _.each(course.topics, function(topic) {
+            allTopics.push(_.clone(topic));
+        });
         degree.courses.push({
             _id: course._id,
             name: course.name
         });
-    } );
+    });
+
+    var index = 1;
+    _.each(allTopics, function(topic) {
+        topic.description = "Some awesome description " + index;
+        ++index;
+    });
 
     var coursesCollection = db.collection( 'courses' );
     coursesCollection.insert( courses, function(err, result){
         assert.equal(err, null);
         var degreesCollection = db.collection( 'degrees' );
-        degreesCollection.insert( [degree], function( err, result ){
-            console.log("Data was populated");
-            db.close();
-        } );
+        degreesCollection.insert( [degree], function( err, result ) {
+            var topicsCollection = db.collection( 'topics' );
+            topicsCollection.insert( allTopics, function( err, result ) {
+                console.log("Data was populated");
+                db.close();
+            });
+        });
     });
 });
