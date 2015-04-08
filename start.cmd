@@ -6,12 +6,12 @@ set deploy_file=local-deploy.sh
 set ssh_payload="%CD%\%deploy_file%"
 set ssh_proxy="%CD%\sshproxy.cmd"
 if exist %sshx86% (
-	boot2docker up --vbox-share="%CD%=degree" -m 1024 --ssh=%sshx86%
+	boot2docker up --vbox-share="%CD%=degree" --ssh=%sshx86%
 	echo @echo off > sshproxy.cmd
 	echo %sshx86% %%* ^< %ssh_payload% >> sshproxy.cmd
 	call :run_ssh %sshx86%
 ) else (
-	boot2docker up --vbox-share="%CD%=degree" -m 1024 --ssh=%sshx64%
+	boot2docker up --vbox-share="%CD%=degree" --ssh=%sshx64%
 	echo @echo off > sshproxy.cmd
 	echo %sshx64% %%* ^< %ssh_payload% > sshproxy.cmd
 	call :run_ssh %sshx64%
