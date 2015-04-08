@@ -1,0 +1,7 @@
+<div class="well">
+    <h1><%= degree.name %></h1>
+    <h3>Courses</h3>
+    <% _.each(degree.courses, function(course){ %>
+    <span class="badge"><%= course.name %></span>
+    <% }); %>
+</div>

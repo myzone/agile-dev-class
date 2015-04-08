@@ -2,17 +2,16 @@ extends ./layout.jade
 block content
     .container-fluid
         .row
-            .col-lg-12(id='content')
-                .input-group
-                    input#search_courses_input(type="text", class="form-control", placeholder="Course name")
-                    span.input-group-btn
-                        button(id="search_courses_btn", class="btn btn-default") Search
-                br
-                #list
-
+            include ./includes/content.jade
 
 block scripts
-    script(id='course_view', type='text/template')
+    script(id='sidebar', type='text/template')
+        include ./js/sidebar.html
+    script(id='search-view', type='text/template')
+        include ./js/search_view.html
+    script(id='degree-view', type='text/template')
+        include ./js/degree_view.html
+    script(id='course-view', type='text/template')
         include ./js/course_view.html
-    script(id='topic_view', type='text/template')
+    script(id='topic-view', type='text/template')
         include ./js/topic_view.html

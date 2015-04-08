@@ -1,0 +1,13 @@
+<%
+function computeItemClass(feature, item) {
+    return feature === item
+            ? 'bg-primary'
+            : '';
+}
+%>
+<ul class="sidebar-nav">
+    <li class="sidebar-brand"></li>
+    <li><a class="<%= computeItemClass(sidebar.activeFeature, 'Features::DegreeSummary') %>" href="#degree-summary">Degree Summary</a></li>
+    <li><a class="<%= computeItemClass(sidebar.activeFeature, 'Features::CourseSearch') %>" href="#course-search">Courses Search</a></li>
+    <li><a class="<%= computeItemClass(sidebar.activeFeature, 'Features::TopicSearch') %>" href="#topic-search">Topic Search</a></li>
+</ul>
