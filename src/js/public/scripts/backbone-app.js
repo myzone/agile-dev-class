@@ -237,7 +237,7 @@ var TopicsCollection = Backbone.Collection.extend({
     url: function () {
         return _.template('/v1/topics?search=<%= searchQuery %>', {searchQuery: this.searchQuery});
     },
-    model: CourseModel, //define class of models in collection
+    model: TopicModel, //define class of models in collection
     initialize: function () {
         // by default show all courses
         this.searchQuery = '';
