@@ -4,6 +4,8 @@ var _ = require('underscore');
 var MongoClient = require('mongodb').MongoClient
   , assert = require('assert');
 
+var async = require('async');
+
 // Connection URL
 var url = 'mongodb://localhost:27017/degree';
 // Use connect method to connect to the Server
@@ -340,10 +342,31 @@ MongoClient.connect(url, function(err, db) {
     courses: []
   };
   var allTopics = [];
+  var coverage = [];
   _.each( courses, function( course ){
+
     _.each(course.topics, function(topic) {
       allTopics.push(_.clone(topic));
     });
+
+    var someTopics = _.filter(course.topics, function(topic) {
+      return Math.round(Math.random());
+    });
+
+    var courseCoverage = [];
+    _.each(course.milestones, function(milestone) {
+      courseCoverage = courseCoverage.concat(_.map(someTopics, function(topic) {
+        return {
+          _id: ObjectId(),
+          topicId: topic._id,
+          milestoneId: milestone._id,
+          weight: Math.random()
+        };
+      }));
+    });
+
+    coverage = coverage.concat(courseCoverage);
+
     degree.courses.push({
       _id: course._id,
       name: course.name
@@ -357,15 +380,50 @@ MongoClient.connect(url, function(err, db) {
   });
 
   var coursesCollection = db.collection( 'courses' );
-  coursesCollection.insert( courses, function(err, result){
-    assert.equal(err, null);
-    var degreesCollection = db.collection( 'degrees' );
-    degreesCollection.insert( [degree], function( err, result ) {
-      var topicsCollection = db.collection( 'topics' );
-      topicsCollection.insert( allTopics, function( err, result ) {
-        console.log("Data was populated");
-        db.close();
+  var degreesCollection = db.collection( 'degrees' );
+  var topicsCollection = db.collection( 'topics' );
+  var coveragesCollection = db.collection( 'coverages' );
+
+  var asyncTasksData = [];
+
+  asyncTasksData.push({
+    collection: coursesCollection,
+    data: courses
+  });
+
+  asyncTasksData.push({
+    collection: degreesCollection,
+    data: [degree]
+  });
+
+  asyncTasksData.push({
+    collection: topicsCollection,
+    data: allTopics
+  });
+
+  asyncTasksData.push({
+   collection: coveragesCollection,
+   data: coverage
+   });
+
+  var asyncTasks = [];
+
+  _.each(asyncTasksData, function(dataElement) {
+    asyncTasks.push(function(callback) {
+      dataElement.collection.insert(dataElement.data, function(err,result) {
+
+        if (err) {
+          console.log(err.stack);
+        } else {
+          callback();
+        }
+
       });
     });
+  });
+
+  async.parallel(asyncTasks, function() {
+    console.log("Data was populated");
+    db.close();
   });
 });
