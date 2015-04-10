@@ -1,0 +1,12 @@
+.user {
+    background-image: url("https://pp.vk.me/c11420/u11176961/-6/z_b00a2dfb.jpg") !important;
+    background-clip: content-box;
+    background-size: 150px;
+    background-position: center;
+
+    width: 159px;
+}
+
+.nobg {
+    background: none !important;
+}
