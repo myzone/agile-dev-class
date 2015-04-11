@@ -5,6 +5,8 @@ var MongoClient = require('mongodb').MongoClient
   , assert = require('assert');
 
 var async = require('async');
+var gen = require('random-seed').create('degree');
+gen.initState();
 
 // Connection URL
 var url = 'mongodb://localhost:27017/degree';
@@ -350,7 +352,7 @@ MongoClient.connect(url, function(err, db) {
     });
 
     var someTopics = _.filter(course.topics, function(topic) {
-      return Math.round(Math.random());
+      return Math.round(gen.random());
     });
 
     var courseCoverage = [];
@@ -358,9 +360,11 @@ MongoClient.connect(url, function(err, db) {
       courseCoverage = courseCoverage.concat(_.map(someTopics, function(topic) {
         return {
           _id: ObjectId(),
+          degreeId: degree._id,
+          courseId: course._id,
           topicId: topic._id,
           milestoneId: milestone._id,
-          weight: Math.random()
+          weight: gen.random()
         };
       }));
     });
@@ -382,7 +386,7 @@ MongoClient.connect(url, function(err, db) {
   var coursesCollection = db.collection( 'courses' );
   var degreesCollection = db.collection( 'degrees' );
   var topicsCollection = db.collection( 'topics' );
-  var coveragesCollection = db.collection( 'coverages' );
+  var coverageCollection = db.collection( 'coverage' );
 
   var asyncTasksData = [];
 
@@ -402,7 +406,7 @@ MongoClient.connect(url, function(err, db) {
   });
 
   asyncTasksData.push({
-   collection: coveragesCollection,
+   collection: coverageCollection,
    data: coverage
    });
 

@@ -47,6 +47,8 @@
 	"coverage": [
 		{
 			"_id": "id",
+            "degreeId": "id",
+            "courseId": "id",
 			"topicId": "id",
 			"milestoneId": "id",
 			"weight": "0.5"
