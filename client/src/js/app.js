@@ -1,157 +1,50 @@
 require.config({
     paths: {
+        'view/header': 'view/header',
+        'view/layout': 'view/layout',
+        'view/sideBar': 'view/sidebar',
+
         'react': 'libs/react-0.13.1',
         'hogan': 'libs/hogan-3.0.1',
         'ramda': 'libs/ramda-0.13.min',
         'jquery': 'libs/jquery-2.1.3',
-        'kefir': 'libs/kefir-1.3.1'
+        'underscore': 'libs/underscore-1.8.3',
+        'backbone': 'libs/backbone-1.1.2',
+        'backbone-react': 'libs/backbone-react-component-0.8.0'
     }
 });
 
-define(['react', 'hogan', 'ramda', 'jquery', 'kefir'], function (React, Hogan, R, $, Kefir) {
-    var Application = function () {
-        var stateEmitter = Kefir.emitter().log();
-        var state = stateEmitter.toProperty({
-            sideBarVisible: true
-        });
+define(['backbone', 'react', 'ramda', 'jquery', 'view/header', 'view/layout', 'view/sideBar'], function (Backbone, React, R, $, Header, Layout, Sidebar) {
+    var application = new Backbone.Model({
+        sideBarVisible: true,
 
-        this.getState = function() {
-            return state;
-        };
+        stylesheets: ['css/style.css', 'css/bootstrap.css', 'css/simple-sidebar.css'],
+        appLogoUrl: 'resources/open-book-clipart.png',
+        appName: 'Degree Overview',
 
-        this.setState = function(state) {
-            stateEmitter.emit(state);
-        };
+        sessionCapabilities: [],
 
-
-        return this;
-    };
-
-    var application = new Application();
-
-    var Layout = React.createClass({
-        getInitialState: function () {
-            return {sideBarVisible: application.getState().sideBarVisible}
-        },
-        componentDidMount: function () {
-            var self = this;
-
-            application.getState().changes().onValue(function (state) {
-                self.setState({sideBarVisible: state.sideBarVisible})
-            })
-        },
-        render: function () {
-            var DOM = React.DOM;
-
-            return DOM.div({}, [
-                DOM.link({rel: 'stylesheet', href: 'css/style.css'}),
-                DOM.link({rel: 'stylesheet', href: 'css/bootstrap.css'}),
-                DOM.link({rel: 'stylesheet', href: 'css/simple-sidebar.css'}),
-
-                DOM.div({id: 'wrapper', className: this.state.sideBarVisible ? 'toggled' : ''}, [
-                    this.props.sidebar,
-                    this.props.header,
-                    DOM.div({className: 'container-fluid'}, [
-                        DOM.div({className: 'row'}, [
-                            DOM.div({id: 'content', className: 'col-lg-12'}, [
-                                this.props.content
-                            ])
-                        ])
-                    ])
-                ])
-            ]);
-        }
+        features: [{
+            name: 'Degree Summary',
+            content: React.DOM.h1(null, 'Degree Summary')
+        }, {
+            name: 'Course Search',
+            content: React.DOM.h1(null, 'Course Search')
+        }],
+        activeFeature: null
     });
 
-    var Sidebar = React.createClass({
-        render: function () {
-            var DOM = React.DOM;
-
-            var SideBarItem = React.createClass({
-                render: function () {
-                    return DOM.a({
-                        className: this.props.active ? 'bg-primary' : '',
-                        href: this.props.link
-                    }, this.props.name);
-                }
-            });
-
-            return DOM.div({id: 'sidebar-wrapper'}, [
-                DOM.ul({className: 'sidebar-nav'}, [
-                    DOM.li({className: 'sidebar-brand'}),
-                    R.map(function (item) {
-                        return DOM.li({}, React.createElement(SideBarItem, {
-                            active: item.active,
-                            link: item.link,
-                            name: item.name
-                        }));
-                    }, this.props.items)
-                ])
-            ]);
-        }
-    });
-
-    var Header = React.createClass({
-        getInitialState: function () {
-            return {sideBarVisible: application.getState().sideBarVisible}
-        },
-        toggleSidebar: function () {
-            var newState = !this.state.sideBarVisible;
-
-            this.setState({sideBarVisible: newState});
-            application.setState({sideBarVisible: newState});
-        },
-        render: function () {
-            var DOM = React.DOM;
-
-            return DOM.nav({className: 'navbar navbar-default navbar-static-top'}, [
-                DOM.div({className: 'container'}, [
-                    DOM.div({id: 'menu-toggle', className: 'navbar-header', onClick: this.toggleSidebar}, [
-                        DOM.img({className: 'navbar-brand', src: this.props.appLogoUrl}),
-                        DOM.a({className: 'navbar-brand', href: '#'}, this.props.appName)
-                    ]),
-                    DOM.div({id: 'navbar', className: 'navbar-collapse collapse'}, [
-                        DOM.ul({className: 'nav navbar-nav navbar-right'}, [
-                            DOM.li({className: 'active dropdown user'}, [
-                                DOM.a({
-                                    className: 'dropdown-toggle',
-                                    //href: '#',
-                                    role: 'button',
-                                    'aria-expanded': 'false'
-                                }, [
-                                    DOM.span({className: 'caret'}),
-                                    DOM.ul({className: 'dropdown-menu userbar', role: 'menu'}, [
-                                        DOM.li({
-                                            className: 'dropdown-header',
-                                            role: 'presentation'
-                                        }, this.props.userName),
-                                        this.props.userMenuItems
-                                    ])
-                                ])
-                            ])
-                        ])
-                    ])
-                ])
-            ])
-        }
-    });
+    application.set('activeFeature', application.get('features')[0]);
+    application.set('activeFeature', application.get('features')[0]);
 
     React.render(React.createElement(Layout, {
         header: React.createElement(Header, {
-            appLogoUrl: 'resources/open-book-clipart.png',
-            appName: 'Degree Overview'
+            model: application
         }),
         sidebar: React.createElement(Sidebar, {
-            items: [{
-                active: true,
-                link: '#degree-summary',
-                name: 'Degree Summary'
-            }, {
-                link: '#course-search',
-                name: 'Courses Search'
-            }]
+            model: application
         }),
-        content: React.DOM.h1(null, 'Hello world!')
+        model: application
     }), document.getElementById('root'));
 
 });
