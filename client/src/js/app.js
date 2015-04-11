@@ -3,12 +3,43 @@ require.config({
         'react': 'libs/react-0.13.1',
         'hogan': 'libs/hogan-3.0.1',
         'ramda': 'libs/ramda-0.13.min',
-        'jquery': 'libs/jquery-2.1.3'
+        'jquery': 'libs/jquery-2.1.3',
+        'kefir': 'libs/kefir-1.3.1'
     }
 });
 
-define(['react', 'hogan', 'ramda', 'jquery'], function (React, Hogan, R, $) {
+define(['react', 'hogan', 'ramda', 'jquery', 'kefir'], function (React, Hogan, R, $, Kefir) {
+    var Application = function () {
+        var stateEmitter = Kefir.emitter().log();
+        var state = stateEmitter.toProperty({
+            sideBarVisible: true
+        });
+
+        this.getState = function() {
+            return state;
+        };
+
+        this.setState = function(state) {
+            stateEmitter.emit(state);
+        };
+
+
+        return this;
+    };
+
+    var application = new Application();
+
     var Layout = React.createClass({
+        getInitialState: function () {
+            return {sideBarVisible: application.getState().sideBarVisible}
+        },
+        componentDidMount: function () {
+            var self = this;
+
+            application.getState().changes().onValue(function (state) {
+                self.setState({sideBarVisible: state.sideBarVisible})
+            })
+        },
         render: function () {
             var DOM = React.DOM;
 
@@ -17,7 +48,7 @@ define(['react', 'hogan', 'ramda', 'jquery'], function (React, Hogan, R, $) {
                 DOM.link({rel: 'stylesheet', href: 'css/bootstrap.css'}),
                 DOM.link({rel: 'stylesheet', href: 'css/simple-sidebar.css'}),
 
-                DOM.div({id: 'wrapper'}, [
+                DOM.div({id: 'wrapper', className: this.state.sideBarVisible ? 'toggled' : ''}, [
                     this.props.sidebar,
                     this.props.header,
                     DOM.div({className: 'container-fluid'}, [
@@ -61,12 +92,21 @@ define(['react', 'hogan', 'ramda', 'jquery'], function (React, Hogan, R, $) {
     });
 
     var Header = React.createClass({
+        getInitialState: function () {
+            return {sideBarVisible: application.getState().sideBarVisible}
+        },
+        toggleSidebar: function () {
+            var newState = !this.state.sideBarVisible;
+
+            this.setState({sideBarVisible: newState});
+            application.setState({sideBarVisible: newState});
+        },
         render: function () {
             var DOM = React.DOM;
 
             return DOM.nav({className: 'navbar navbar-default navbar-static-top'}, [
                 DOM.div({className: 'container'}, [
-                    DOM.div({id: 'menu-toggle', className: 'navbar-header'}, [
+                    DOM.div({id: 'menu-toggle', className: 'navbar-header', onClick: this.toggleSidebar}, [
                         DOM.img({className: 'navbar-brand', src: this.props.appLogoUrl}),
                         DOM.a({className: 'navbar-brand', href: '#'}, this.props.appName)
                     ]),
@@ -98,7 +138,7 @@ define(['react', 'hogan', 'ramda', 'jquery'], function (React, Hogan, R, $) {
 
     React.render(React.createElement(Layout, {
         header: React.createElement(Header, {
-            //appLogoUrl: 'http://localhost:63342/agile-dev-class/client/src/resources/open-book-clipart.png',
+            appLogoUrl: 'resources/open-book-clipart.png',
             appName: 'Degree Overview'
         }),
         sidebar: React.createElement(Sidebar, {
@@ -114,8 +154,4 @@ define(['react', 'hogan', 'ramda', 'jquery'], function (React, Hogan, R, $) {
         content: React.DOM.h1(null, 'Hello world!')
     }), document.getElementById('root'));
 
-    $("#menu-toggle").click(function (e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
 });
