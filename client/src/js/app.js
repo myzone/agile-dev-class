@@ -111,7 +111,7 @@ define(['react', 'hogan', 'ramda', 'jquery'], function (React, Hogan, R, $) {
                 name: 'Courses Search'
             }]
         }),
-        content: React.DOM.h1(null, 'fuck yeah')
+        content: React.DOM.h1(null, 'Hello world!')
     }), document.getElementById('root'));
 
     $("#menu-toggle").click(function (e) {
