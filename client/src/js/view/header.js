@@ -1,44 +1,52 @@
-define(['react', 'ramda', 'jquery', 'backbone-react', 'backbone'], function (React, R, $, BackboneReact, Backbone) {
+define(['react', 'react-bootstrap', 'ramda', 'jquery', 'backbone-react', 'backbone'], function (React, ReactBootstrap, R, $, BackboneReact, Backbone) {
+    var Capability = React.createClass({
+        render: function () {
+            return React.createElement(ReactBootstrap.MenuItem, {onClick: this.props.action}, this.props.name);
+        }
+    });
+
     return React.createClass({
         mixins: [Backbone.React.Component.mixin],
-        toggleSidebar: function () {
-            var newState = !this.state.model.sideBarVisible;
-
-            this.props.model.set('sideBarVisible', newState);
-        },
         render: function () {
             var DOM = React.DOM;
+            var model2Change = this.props.model;
+            var model2Read = this.state.model;
 
-            return DOM.nav({className: 'navbar navbar-default navbar-static-top'}, [
-                DOM.div({className: 'container'}, [
-                    DOM.div({id: 'menu-toggle', className: 'navbar-header', onClick: this.toggleSidebar}, [
-                        DOM.img({className: 'navbar-brand', src: this.state.model.appLogoUrl}),
-                        DOM.a({className: 'navbar-brand', href: '#'}, this.state.model.appName)
-                    ]),
-                    DOM.div({id: 'navbar', className: 'navbar-collapse collapse'}, [
-                        DOM.ul({className: 'nav navbar-nav navbar-right'}, [
-                            DOM.li({className: 'active dropdown user'}, [
-                                DOM.a({
-                                    className: 'dropdown-toggle',
-                                    role: 'button',
-                                    'aria-expanded': 'false'
-                                }, [
-                                    DOM.span({className: 'caret'}),
-                                    DOM.ul({className: 'dropdown-menu userbar', role: 'menu'}, [
-                                        DOM.li({
-                                            className: 'dropdown-header',
-                                            role: 'presentation'
-                                        }, this.props.userName),
-                                        R.map(function(capability) {
-                                            return DOM.li({onClick: capability.action}, DOM.a(capability.name));
-                                        }, this.state.model.sessionCapabilities)
-                                    ])
-                                ])
-                            ])
-                        ])
+            var toggleSidebar = function () {
+                var newState = !model2Read.sideBarVisible;
+
+                model2Change.set('sideBarVisible', newState);
+            };
+
+            return React.createElement(ReactBootstrap.Navbar, {
+                brand: DOM.img({
+                    display: 'inline',
+                    className: 'navbar-brand',
+                    src: model2Read.appLogoUrl,
+                    onClick: toggleSidebar
+                })
+            }, [
+                React.createElement(ReactBootstrap.Nav, {navbar: true}, [
+                    React.createElement(ReactBootstrap.NavItem, {}, DOM.div({
+                        className: 'brand-hack',
+                        onClick: toggleSidebar
+                    }, model2Read.appName))
+                ]),
+                React.createElement(ReactBootstrap.Nav, {navbar: true, right: true}, [
+                    React.createElement(ReactBootstrap.DropdownButton, {}, [
+                        React.createElement(ReactBootstrap.MenuItem, {key: -1, header: true}, model2Read.userName),
+                        R.map(function (capability, i) {
+                            return React.createElement(Capability, {
+                                key: i,
+                                name: capability.name,
+                                action: function () {
+                                    capability.action(model2Change);
+                                }
+                            });
+                        }, model2Read.sessionCapabilities)
                     ])
                 ])
-            ])
+            ]);
         }
     });
 });

@@ -4,6 +4,7 @@ define(['react', 'ramda', 'jquery', 'backbone-react', 'backbone'], function (Rea
         render: function () {
             var DOM = React.DOM;
             var model2Change = this.props.model;
+            var model2Read = this.state.model;
 
             var SideBarItem = React.createClass({
                 render: function () {
@@ -16,8 +17,12 @@ define(['react', 'ramda', 'jquery', 'backbone-react', 'backbone'], function (Rea
                 }
             });
 
-
-            var activeFeature = this.state.model.activeFeature;
+            var activeFeature = model2Read.activeFeature;
+            var features = R.pipe(
+                Object.keys,
+                R.map(function(k){return model2Read.features[k]}),
+                R.filter(function(feature){return !feature.hidden;})
+            )(model2Read.features);
 
             return DOM.div({id: 'sidebar-wrapper'}, [
                 DOM.ul({className: 'sidebar-nav'}, [
@@ -27,7 +32,7 @@ define(['react', 'ramda', 'jquery', 'backbone-react', 'backbone'], function (Rea
                             active: feature === activeFeature,
                             feature: feature
                         }));
-                    }, this.state.model.features)
+                    }, features)
                 ])
             ]);
         }
