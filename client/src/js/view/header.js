@@ -19,6 +19,7 @@ define(['react', 'react-bootstrap', 'ramda', 'jquery', 'backbone-react', 'backbo
             };
 
             return React.createElement(ReactBootstrap.Navbar, {
+                key: 'navbar',
                 brand: DOM.img({
                     display: 'inline',
                     className: 'navbar-brand',
@@ -26,14 +27,14 @@ define(['react', 'react-bootstrap', 'ramda', 'jquery', 'backbone-react', 'backbo
                     onClick: toggleSidebar
                 })
             }, [
-                React.createElement(ReactBootstrap.Nav, {navbar: true}, [
-                    React.createElement(ReactBootstrap.NavItem, {}, DOM.div({
+                React.createElement(ReactBootstrap.Nav, {navbar: true, key: 'nav1'}, [
+                    React.createElement(ReactBootstrap.NavItem, {key: 'item1'}, DOM.div({
                         className: 'brand-hack',
                         onClick: toggleSidebar
                     }, model2Read.appName))
                 ]),
-                React.createElement(ReactBootstrap.Nav, {navbar: true, right: true}, [
-                    React.createElement(ReactBootstrap.DropdownButton, {}, [
+                React.createElement(ReactBootstrap.Nav, {navbar: true, right: true, key: 'nav2'}, [
+                    React.createElement(ReactBootstrap.DropdownButton, {key: 'dropdown'}, [
                         React.createElement(ReactBootstrap.MenuItem, {key: -1, header: true}, model2Read.userName),
                         R.map(function (capability, i) {
                             return React.createElement(Capability, {

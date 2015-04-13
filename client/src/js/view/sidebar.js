@@ -24,9 +24,9 @@ define(['react', 'ramda', 'jquery', 'backbone-react', 'backbone'], function (Rea
                 R.filter(function(feature){return !feature.hidden;})
             )(model2Read.features);
 
-            return DOM.div({id: 'sidebar-wrapper'}, [
-                DOM.ul({className: 'sidebar-nav'}, [
-                    DOM.li({className: 'sidebar-brand'}),
+            return DOM.div({key: 'sidebar-wrapper', id: 'sidebar-wrapper'}, [
+                DOM.ul({key: 'sidebar-nav', className: 'sidebar-nav'}, [
+                    DOM.li({key: -1, className: 'sidebar-brand'}),
                     R.map(function (feature, i) {
                         return DOM.li({key: i}, React.createElement(SideBarItem, {
                             active: feature === activeFeature,

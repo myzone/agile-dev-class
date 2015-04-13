@@ -4,17 +4,17 @@ define(['react', 'ramda', 'jquery', 'backbone-react', 'backbone'], function (Rea
         render: function () {
             var DOM = React.DOM;
 
-            return DOM.div({}, [
-                R.map(function(stylesheet) {
-                    return DOM.link({rel: 'stylesheet', href: stylesheet});
+            return DOM.div({key: 'root'}, [
+                R.map(function(stylesheet, i) {
+                    return DOM.link({key: i, rel: 'stylesheet', href: stylesheet});
                 }, this.state.model.stylesheets),
 
-                DOM.div({id: 'wrapper', className: !this.state.model.sideBarVisible ? 'toggled' : ''}, [
+                DOM.div({key: -1, id: 'wrapper', className: !this.state.model.sideBarVisible ? 'toggled' : ''}, [
                     this.props.sidebar,
                     this.props.header,
-                    DOM.div({className: 'container-fluid'}, [
-                        DOM.div({className: 'row'}, [
-                            DOM.div({id: 'content', className: 'col-lg-12'}, [
+                    DOM.div({key: 'container-fluid', className: 'container-fluid'}, [
+                        DOM.div({key: 'row', className: 'row'}, [
+                            DOM.div({id: 'content', key: 'content', className: 'col-lg-12'}, [
                                 this.state.model.activeFeature.content
                             ])
                         ])
