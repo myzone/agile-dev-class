@@ -7,7 +7,7 @@ define(['react', 'react-bootstrap', 'ramda', 'jquery', 'backbone-react', 'backbo
         },
         render: function () {
             var search = function () {
-                this.props.onSearch(this.state.value);
+                this.props.onSearch(this.props.value);
             }.bind(this);
 
             return React.createElement(ReactBootstrap.Input, {

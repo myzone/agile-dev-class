@@ -1,13 +1,19 @@
 require.config({
     paths: {
-        'view/header': 'views/header',
-        'view/layout': 'views/layout',
-        'view/sidebar': 'views/sidebar',
-        'view/search': 'views/search',
-        'view/collection': 'views/collection',
-        'view/course': 'views/course',
+        'views/header': 'views/header',
+        'views/layout': 'views/layout',
+        'views/sidebar': 'views/sidebar',
 
+        'views/search': 'views/search',
+        'views/collection': 'views/collection',
+
+        'views/degree': 'views/degree',
+        'views/course': 'views/course',
+        'views/topic': 'views/topic',
+
+        'models/degrees': 'models/degrees-collection',
         'models/courses': 'models/courses-collection',
+        'models/topics': 'models/topics-collection',
 
         'react': 'libs/react-0.13.1',
         'react-bootstrap': 'libs/react-bootstrap-0.20.3',
@@ -20,8 +26,10 @@ require.config({
     }
 });
 
-define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header', 'views/layout', 'views/sidebar', 'views/search', 'views/collection', 'views/course', 'models/courses'], function (Backbone, React, ReactBootstrap, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, CourseView, CoursesCollection) {
+define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header', 'views/layout', 'views/sidebar', 'views/search', 'views/collection', 'views/degree',  'views/course', 'views/topic', 'models/degrees', 'models/courses', 'models/topics'], function (Backbone, React, ReactBootstrap, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection) {
+    var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
+    var topicsCollection = new TopicsCollection();
 
     var application = new Backbone.Model({
         sideBarVisible: true,
@@ -42,13 +50,28 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
         features: {
             'degree-summary': {
                 name: 'Degree Summary',
-                content: React.DOM.h1({key: 'degree-summary'}, 'Degree Summary')
+                content: React.createElement(React.createClass({
+                    componentWillMount: function () {
+                        degreesCollection.fetch({
+                            reset: true,
+                            wait: true
+                        });
+                    },
+                    render: function () {
+                        return React.createElement(CollectionView, {
+                            key: 'search-result',
+                            collection: degreesCollection,
+                            view: DegreeView
+                        })
+                    }
+                }), {key: 'course-search'})
             },
             'course-search': {
                 name: 'Course Search',
                 content: React.DOM.div({key: 'course-search'}, [
                     React.createElement(SearchView, {
                         key: 'search',
+                        placeholder: 'Course name',
                         onSearch: function (query) {
                             var data = query
                                 ? {search: query}
@@ -65,6 +88,31 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
                         key: 'search-result',
                         collection: coursesCollection,
                         view: CourseView
+                    })
+                ])
+            },
+            'topic-search': {
+                name: 'Topic Search',
+                content: React.DOM.div({key: 'topic-search'}, [
+                    React.createElement(SearchView, {
+                        key: 'search',
+                        placeholder: 'Topic name',
+                        onSearch: function (query) {
+                            var data = query
+                                ? {search: query}
+                                : {};
+
+                            topicsCollection.fetch({
+                                reset: true,
+                                wait: true,
+                                data: $.param(data)
+                            });
+                        }
+                    }),
+                    React.createElement(CollectionView, {
+                        key: 'search-result',
+                        collection: topicsCollection,
+                        view: TopicView
                     })
                 ])
             },

@@ -4,8 +4,6 @@ define(['react', 'react-bootstrap', 'ramda'], function (React, ReactBootstrap, R
             var DOM = React.DOM;
             var course = this.props.model;
 
-            console.log(this.props);
-
             return React.createElement(ReactBootstrap.Well, {}, [
                 DOM.h1({key: 'name'}, course.name),
 
