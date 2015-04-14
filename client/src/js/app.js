@@ -1,11 +1,11 @@
 require.config({
     paths: {
-        'view/header': 'view/header',
-        'view/layout': 'view/layout',
-        'view/sidebar': 'view/sidebar',
-        'view/search': 'view/search',
-        'view/collection': 'view/collection',
-        'view/course': 'view/course',
+        'view/header': 'views/header',
+        'view/layout': 'views/layout',
+        'view/sidebar': 'views/sidebar',
+        'view/search': 'views/search',
+        'view/collection': 'views/collection',
+        'view/course': 'views/course',
 
         'models/courses': 'models/courses-collection',
 
@@ -20,7 +20,7 @@ require.config({
     }
 });
 
-define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'view/header', 'view/layout', 'view/sidebar', 'view/search', 'view/collection', 'view/course', 'models/courses'], function (Backbone, React, ReactBootstrap, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, CourseView, CoursesCollection) {
+define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header', 'views/layout', 'views/sidebar', 'views/search', 'views/collection', 'views/course', 'models/courses'], function (Backbone, React, ReactBootstrap, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, CourseView, CoursesCollection) {
     var coursesCollection = new CoursesCollection();
 
     var application = new Backbone.Model({
