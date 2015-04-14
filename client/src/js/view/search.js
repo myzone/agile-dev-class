@@ -6,21 +6,29 @@ define(['react', 'react-bootstrap', 'ramda', 'jquery', 'backbone-react', 'backbo
             }
         },
         render: function () {
+            var search = function () {
+                this.props.onSearch(this.state.value);
+            }.bind(this);
+
             return React.createElement(ReactBootstrap.Input, {
                 key: 'input',
                 type: 'text',
                 ref: 'input',
-                value: this.state.value,
+                value: this.props.value,
                 placeholder: this.props.placeholder,
                 buttonAfter: React.createElement(ReactBootstrap.Button, {
                     bsStyle: 'primary',
-                    onClick: function () {
-                        this.props.onSearch(this.state.value);
-                    }.bind(this)
+                    onClick: search
                 }, "Search"),
                 onChange: function () {
                     this.setState({value: this.refs.input.getValue()});
-                }.bind(this)
+                    this.props.value = this.refs.input.getValue();
+                }.bind(this),
+                onKeyDown: function (e) {
+                    if (e.nativeEvent.keyCode == 13) {
+                        search();
+                    }
+                }
             });
         }
     });
