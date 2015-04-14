@@ -4,6 +4,10 @@ require.config({
         'view/layout': 'view/layout',
         'view/sidebar': 'view/sidebar',
         'view/search': 'view/search',
+        'view/collection': 'view/collection',
+        'view/course': 'view/course',
+
+        'models/courses': 'models/courses-collection',
 
         'react': 'libs/react-0.13.1',
         'react-bootstrap': 'libs/react-bootstrap-0.20.3',
@@ -16,29 +20,7 @@ require.config({
     }
 });
 
-define(['backbone', 'react', 'ramda', 'jquery', 'view/header', 'view/layout', 'view/sidebar', 'view/search'], function (Backbone, React, R, $, Header, Layout, Sidebar, Search) {
-    var CourseModel = Backbone.Model.extend({});
-
-    var CoursesCollection = Backbone.Collection.extend({
-        url: '/v1/courses',
-        model: CourseModel
-    });
-
-    var CoursesResult = React.createClass({
-        mixins: [Backbone.React.Component.mixin],
-        render: function () {
-            var DOM = React.DOM;
-            var collection2Read = this.state.collection;
-
-            return DOM.div({}, [
-                R.map(function (course) {
-                    return DOM.h2({}, course.name);
-                }, collection2Read)
-            ]);
-        }
-    });
-
-
+define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'view/header', 'view/layout', 'view/sidebar', 'view/search', 'view/collection', 'view/course', 'models/courses'], function (Backbone, React, ReactBootstrap, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, CourseView, CoursesCollection) {
     var coursesCollection = new CoursesCollection();
 
     var application = new Backbone.Model({
@@ -65,7 +47,7 @@ define(['backbone', 'react', 'ramda', 'jquery', 'view/header', 'view/layout', 'v
             'course-search': {
                 name: 'Course Search',
                 content: React.DOM.div({key: 'course-search'}, [
-                    React.createElement(Search, {
+                    React.createElement(SearchView, {
                         key: 'search',
                         onSearch: function (query) {
                             var data = query
@@ -79,9 +61,10 @@ define(['backbone', 'react', 'ramda', 'jquery', 'view/header', 'view/layout', 'v
                             });
                         }
                     }),
-                    React.createElement(CoursesResult, {
+                    React.createElement(CollectionView, {
                         key: 'search-result',
-                        collection: coursesCollection
+                        collection: coursesCollection,
+                        view: CourseView
                     })
                 ])
             },
@@ -96,15 +79,15 @@ define(['backbone', 'react', 'ramda', 'jquery', 'view/header', 'view/layout', 'v
 
     application.set('activeFeature', application.get('features')['course-search']);
 
-    var header = React.createElement(Header, {
+    var header = React.createElement(HeaderView, {
         key: 'header',
         model: application
     });
-    var sidebar = React.createElement(Sidebar, {
+    var sidebar = React.createElement(SidebarView, {
         key: 'sidebar',
         model: application
     });
-    var layout = React.createElement(Layout, {
+    var layout = React.createElement(LayoutView, {
         key: 'layout',
         header: header,
         sidebar: sidebar,

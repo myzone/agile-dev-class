@@ -20,6 +20,7 @@ define(['react', 'react-bootstrap', 'ramda', 'jquery', 'backbone-react', 'backbo
 
             return React.createElement(ReactBootstrap.Navbar, {
                 key: 'navbar',
+                staticTop: true,
                 brand: DOM.img({
                     display: 'inline',
                     className: 'navbar-brand',
