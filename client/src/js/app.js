@@ -22,11 +22,12 @@ require.config({
         'jquery': 'libs/jquery-2.1.3',
         'underscore': 'libs/underscore-1.8.3',
         'backbone': 'libs/backbone-1.1.2',
-        'backbone-react': 'libs/backbone-react-component-0.8.0'
+        'backbone-react': 'libs/backbone-react-component-0.8.0',
+        'three': 'libs/three-PATCHED-r71'
     }
 });
 
-define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header', 'views/layout', 'views/sidebar', 'views/search', 'views/collection', 'views/degree',  'views/course', 'views/topic', 'models/degrees', 'models/courses', 'models/topics'], function (Backbone, React, ReactBootstrap, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection) {
+define(['backbone', 'react', 'react-bootstrap', 'three', 'ramda', 'jquery', 'views/header', 'views/layout', 'views/sidebar', 'views/search', 'views/collection', 'views/degree', 'views/course', 'views/topic', 'models/degrees', 'models/courses', 'models/topics'], function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection) {
     var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
     var topicsCollection = new TopicsCollection();
@@ -120,6 +121,12 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
                 name: 'User Profile',
                 content: React.DOM.h1({key: 'user-profile'}, 'User Profile'),
                 hidden: true
+            },
+            '3d': {
+                name: '3d',
+                content: React.createElement(DegreeView, {model: {name: 'Software engineering', courses: [
+                    {name: 'C++'}, {name:'Java'}, {name:"Web dev"}, {name:'Brainfuck'}, {name:'Not Only Brainfuck'}
+                ]}})
             }
         },
         activeFeature: null

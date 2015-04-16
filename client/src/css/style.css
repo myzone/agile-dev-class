@@ -7,6 +7,11 @@
     width: 159px;
 }
 
+.fillParent {
+    height: 100%;
+    width: 100%;
+}
+
 .nobg {
     background: none !important;
 }
