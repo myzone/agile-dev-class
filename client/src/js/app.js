@@ -23,11 +23,34 @@ require.config({
         'underscore': 'libs/underscore-1.8.3',
         'backbone': 'libs/backbone-1.1.2',
         'backbone-react': 'libs/backbone-react-component-0.8.0',
-        'three': 'libs/three-PATCHED-r71'
+        'three': 'libs/three-PATCHED-r71',
+        'script/visjs': 'scripts/visjs',
+        'vis': 'libs/vis.min'
     }
 });
 
-define(['backbone', 'react', 'react-bootstrap', 'three', 'ramda', 'jquery', 'views/header', 'views/layout', 'views/sidebar', 'views/search', 'views/collection', 'views/degree', 'views/course', 'views/topic', 'models/degrees', 'models/courses', 'models/topics'], function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection) {
+define([
+    'backbone',
+    'react',
+    'react-bootstrap',
+    'three',
+    'ramda',
+    'jquery',
+    'views/header',
+    'views/layout',
+    'views/sidebar',
+    'views/search',
+    'views/collection',
+    'views/degree',
+    'views/course',
+    'views/topic',
+    'models/degrees',
+    'models/courses',
+    'models/topics',
+    'vis',
+    'script/visjs',
+    'underscore'],
+    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, vis, visDraw, _) {
     var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
     var topicsCollection = new TopicsCollection();
@@ -37,7 +60,7 @@ define(['backbone', 'react', 'react-bootstrap', 'three', 'ramda', 'jquery', 'vie
 
         userName: "myzone",
 
-        stylesheets: ['css/style.css', 'css/bootstrap.css', 'css/simple-sidebar.css'],
+        stylesheets: ['css/style.css', 'css/bootstrap.css', 'css/simple-sidebar.css', 'css/vis.min.css'],
         appLogoUrl: 'resources/open-book-clipart.png',
         appName: 'Degree Overview',
 
@@ -127,12 +150,16 @@ define(['backbone', 'react', 'react-bootstrap', 'three', 'ramda', 'jquery', 'vie
                 content: React.createElement(DegreeView, {model: {name: 'Software engineering', courses: [
                     {name: 'C++'}, {name:'Java'}, {name:"Web dev"}, {name:'Brainfuck'}, {name:'Not Only Brainfuck'}
                 ]}})
+            },
+            '2d':{
+                name: '2d',
+                content: React.DOM.div({id: 'graph-content'})
             }
         },
         activeFeature: null
     });
 
-    application.set('activeFeature', application.get('features')['course-search']);
+    application.set('activeFeature', application.get('features')['2d']);
 
     var header = React.createElement(HeaderView, {
         key: 'header',
@@ -150,4 +177,6 @@ define(['backbone', 'react', 'react-bootstrap', 'three', 'ramda', 'jquery', 'vie
     });
 
     React.render(layout, document.getElementById('root'));
+
+    _.debounce(visDraw.draw(), 50);
 });
