@@ -2,8 +2,9 @@ module.exports = function(app) {
 
   var mongoose = require('mongoose');
   var topicModel = require('../models/topic')().model;
+  var dependencyModel = require('../models/dependency')().model;
 
-  app.get('/v1/topics', function getAllCourses(req, res, next) {
+  app.get('/v1/topics', function getAllTopics(req, res, next) {
 
     var condition = {};
 
@@ -24,7 +25,7 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/v1/topics/:id', function getDegreeById(req, res, next) {
+  app.get('/v1/topics/:id', function getTopicById(req, res, next) {
 
     try {
       var id = mongoose.Types.ObjectId(req.params.id);
@@ -36,6 +37,37 @@ module.exports = function(app) {
     }
 
     topicModel.findOne({_id: id}, function onFindResult(err, data) {
+      if (err) {
+        next(err);
+        return;
+      }
+      if (data) {
+        res.json(data);
+      } else {
+        res.send(404);
+      }
+      next();
+    });
+
+  });
+
+  app.get('/v1/topics/:id/dependencies', function getTopicDependencies(req, res, next) {
+
+    try {
+      var id = mongoose.Types.ObjectId(req.params.id);
+    }
+    catch (e) {
+      res.send(400);
+      next(e);
+      return;
+    }
+
+    dependencyModel.find({
+      $or: [
+        {'basic.topicId': id},
+        {'dependent.topicId': id},
+      ]
+    }, function onFindResult(err, data) {
       if (err) {
         next(err);
         return;
