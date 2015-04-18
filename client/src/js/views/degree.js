@@ -50,23 +50,28 @@ define(['react', 'react-bootstrap', 'ramda', 'three'], function (React, ReactBoo
         },
 
         render: function () {
-            return React.createElement(ReactBootstrap.Button, {
-                onClick: this.handleToggle
-            }, ['show dependencies'])
+            return React.createElement(ReactBootstrap.OverlayTrigger, {
+                overlay: React.createElement(ReactBootstrap.Tooltip, {}, 'show dependencies')
+            },  React.createElement(ReactBootstrap.Glyphicon, {
+                onClick: this.handleToggle,
+                glyph: 'education',
+                alt: 'show dependecies'
+            }))
         },
 
         renderOverlay: function () {
             if (!this.state.isModalOpen)
-                return React.createElement("span", null);
+                return React.createElement('span', null);
 
 
             return React.createElement(ReactBootstrap.Modal, {
-                    title: "Dependencies",
-                    onRequestHide: this.handleToggle
+                    title: 'Dependencies',
+                    onRequestHide: this.handleToggle,
+                    className: 'fullscreen'
                 },
                 React.createElement(ThreeView, {}),
-                React.createElement("div", {className: "modal-footer"},
-                    React.createElement(ReactBootstrap.Button, {onClick: this.handleToggle}, "Close")
+                React.createElement('div', {className: 'modal-footer'},
+                    React.createElement(ReactBootstrap.Button, {onClick: this.handleToggle}, 'Close')
                 )
             );
         }
@@ -81,7 +86,7 @@ define(['react', 'react-bootstrap', 'ramda', 'three'], function (React, ReactBoo
                 DOM.h1({key: 'name'}, [
                     degree.name,
                     DOM.span({}, ' '),
-                    React.createElement(ModalView, {})
+                    DOM.span({className: 'small'}, React.createElement(ModalView, {}))
                 ]),
 
                 DOM.div({key: 'courses'}, [
