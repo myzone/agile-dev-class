@@ -6,6 +6,7 @@ require.config({
 
         'views/search': 'views/search',
         'views/collection': 'views/collection',
+        'views/graph': 'views/graph',
 
         'views/degree': 'views/degree',
         'views/course': 'views/course',
@@ -159,7 +160,7 @@ define([
         activeFeature: null
     });
 
-    application.set('activeFeature', application.get('features')['2d']);
+    application.set('activeFeature', application.get('features')['3d']);
 
     var header = React.createElement(HeaderView, {
         key: 'header',
