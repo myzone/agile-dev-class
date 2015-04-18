@@ -345,10 +345,15 @@ MongoClient.connect(url, function(err, db) {
   };
   var allTopics = [];
   var coverage = [];
+  var dependencies = [];
   _.each( courses, function( course ){
 
     _.each(course.topics, function(topic) {
-      allTopics.push(_.clone(topic));
+      var extendedTopic = _.clone(topic);
+      extendedTopic.degreeId = degree._id;
+      extendedTopic.courseId = course._id;
+      extendedTopic.courseName = course.name;
+      allTopics.push(extendedTopic);
     });
 
     var someTopics = _.filter(course.topics, function(topic) {
@@ -377,9 +382,38 @@ MongoClient.connect(url, function(err, db) {
     });
   });
 
+  _.each(allTopics, function(topic) {
+    var otherTopics = _.filter(allTopics, function(item) {
+      return topic.courseId !== item.courseId;
+    });
+    var someTopics = _.filter(otherTopics, function(item) {
+      return Math.round(gen.random());
+    });
+    _.each(someTopics, function(item) {
+      var dependency = {
+        _id: ObjectId(),
+        degreeId: degree._id,
+        basic: {
+          courseId: item.courseId,
+          courseName: item.courseName,
+          topicId: item._id,
+          topicName: item.name
+        },
+        dependent: {
+          courseId: topic.courseId,
+          courseName: topic.courseName,
+          topicId: topic._id,
+          topicName: topic.name
+        }
+      };
+      dependencies.push(dependency);
+    });
+  });
+
   var index = 1;
   _.each(allTopics, function(topic) {
     topic.description = "Some awesome description " + index;
+    delete topic.courseName;
     ++index;
   });
 
@@ -387,6 +421,7 @@ MongoClient.connect(url, function(err, db) {
   var degreesCollection = db.collection( 'degrees' );
   var topicsCollection = db.collection( 'topics' );
   var coverageCollection = db.collection( 'coverage' );
+  var dependencyCollection = db.collection( 'dependencies' );
 
   var asyncTasksData = [];
 
@@ -406,9 +441,14 @@ MongoClient.connect(url, function(err, db) {
   });
 
   asyncTasksData.push({
-   collection: coverageCollection,
-   data: coverage
-   });
+    collection: coverageCollection,
+    data: coverage
+  });
+
+  asyncTasksData.push({
+    collection: dependencyCollection,
+    data: dependencies
+  });
 
   var asyncTasks = [];
 

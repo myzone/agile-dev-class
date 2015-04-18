@@ -40,10 +40,30 @@
 	"topics": [
 		{
 			"_id": "id",
+            "degreeId": "id",
+            "courseId": "id",
 			"name": "Topic name",
 			"description": "Topic description"
 		}
 	],
+    "dependencies": [
+      {
+        "_id": "id",
+        "degreeId": "degreeId",
+        "basic": {
+          "courseId": "courseId",
+          "courseName": "Course name",
+          "topicId": "topicId",
+          "topicName": "Topic name"
+        },
+        "dependent": {
+          "courseId": "courseId",
+          "courseName": "Course name",
+          "topicId": "topicId",
+          "topicName": "Topic name"
+        }
+      }
+    ],
 	"coverage": [
 		{
 			"_id": "id",
