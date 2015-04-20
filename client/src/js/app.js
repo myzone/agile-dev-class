@@ -154,7 +154,7 @@ define([
             },
             '2d':{
                 name: '2d',
-                content: React.DOM.div({id: 'graph-content'})
+                content: React.createElement(visDraw, {})
             }
         },
         activeFeature: null
@@ -179,5 +179,4 @@ define([
 
     React.render(layout, document.getElementById('root'));
 
-    _.debounce(visDraw.draw(), 50);
 });

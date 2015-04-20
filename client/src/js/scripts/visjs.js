@@ -1,137 +1,133 @@
-define(['vis'], function(vis){
-    network = null;
-    var layoutMethod = "direction";
-
-    function destroy() {
-        if (network !== null) {
-            network.destroy();
+define(['react', 'react-bootstrap', 'ramda','vis'], function(React, ReactBootstrap, R, vis){
+    return React.createClass({
+        componentDidMount: function () {
             network = null;
-        }
-    }
+            var layoutMethod = "direction";
 
-    function draw() {
-        if($('#graph-content').length == 0)
-            return false;
-        destroy();
-        degrees=[
-            {
-                id: '1',
-                degree: 'Software engineering',
-                courses: [
-                    {
-                        id: '2',
-                        name: 'Data Science',
-                        topics:[
-                            {
-                                id: '5',
-                                name: 'The Data Scientist’s Toolbox'
-                            },
-                            {
-                                id: '6',
-                                name: 'R Programming'
-                            }
-                        ]
-                    },
-                    {
-                        id: '3',
-                        name: 'Data Mining'
-                    },
-                    {
-                        id: '4',
-                        name: 'Principles of Computing'
-                    }
-                ]
+            function destroy() {
+                if (network !== null) {
+                    network.destroy();
+                    network = null;
+                }
             }
-        ];
+            destroy();
+            degrees = [
+                {
+                    id: '1',
+                    degree: 'Software engineering',
+                    courses: [
+                        {
+                            id: '2',
+                            name: 'Data Science',
+                            topics: [
+                                {
+                                    id: '5',
+                                    name: 'The Data Scientist’s Toolbox'
+                                },
+                                {
+                                    id: '6',
+                                    name: 'R Programming'
+                                }
+                            ]
+                        },
+                        {
+                            id: '3',
+                            name: 'Data Mining'
+                        },
+                        {
+                            id: '4',
+                            name: 'Principles of Computing'
+                        }
+                    ]
+                }
+            ];
 
-        edgesData= {
-            1:  {
-                from: 1,
-                to: 2,
-                label: 'course'
-            },
-            2:  {
-                from: 1,
-                to: 3,
-                label: 'course'
-            },
-            3:  {
-                from: 1,
-                to: 4,
-                label: 'course'
-            },
-            4:  {
-                from: 2,
-                to: 5,
-                label: 'topic'
-            },
-            5:  {
-                from: 2,
-                to: 6,
-                label: 'topic'
-            }
-        };
+            edgesData = {
+                1: {
+                    from: 1,
+                    to: 2,
+                    label: 'course'
+                },
+                2: {
+                    from: 1,
+                    to: 3,
+                    label: 'course'
+                },
+                3: {
+                    from: 1,
+                    to: 4,
+                    label: 'course'
+                },
+                4: {
+                    from: 2,
+                    to: 5,
+                    label: 'topic'
+                },
+                5: {
+                    from: 2,
+                    to: 6,
+                    label: 'topic'
+                }
+            };
 
-        var nodes = [];
-        var edges = [];
+            var nodes = [];
+            var edges = [];
 
-        _.each( degrees, function( degree ){
-            nodes.push({
-                id: degree.id,
-                label: degree.degree
-            });
-            _.each( degree.courses, function( course ){
+            _.each(degrees, function (degree) {
                 nodes.push({
-                    id: course.id,
-                    label: course.name
+                    id: degree.id,
+                    label: degree.degree
                 });
-                _.each( course.topics, function( topic ){
+                _.each(degree.courses, function (course) {
                     nodes.push({
-                        id: topic.id,
-                        label: topic.name
+                        id: course.id,
+                        label: course.name
+                    });
+                    _.each(course.topics, function (topic) {
+                        nodes.push({
+                            id: topic.id,
+                            label: topic.name
+                        });
                     });
                 });
             });
-        });
 
-        //console.log(nodes);
-        _.each( edgesData, function( edge ) {
-            edges.push({
-                from: edge.from,
-                to: edge.to,
-                label: edge.label
+            _.each(edgesData, function (edge) {
+                edges.push({
+                    from: edge.from,
+                    to: edge.to,
+                    label: edge.label
+                });
             });
-        });
 
-        // create a network
-        var container = document.getElementById('graph-content');
-        var data = {
-            nodes: nodes,
-            edges: edges
-        };
+            // create a network
+            var container = React.findDOMNode(this.refs.visDiv);
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
 
-        var options = {
-            hierarchicalLayout: {
-                layout: layoutMethod
-            },
-            edges: {style:"arrow"},
-            smoothCurves:false,
-            width: '100%',
-            height: '600px'
+            var options = {
+                hierarchicalLayout: {
+                    layout: layoutMethod
+                },
+                edges: {style: "arrow"},
+                smoothCurves: false,
+                width: '100%',
+                height: '600px'
 
-        };
-        network = new vis.Network(container, data, options);
-        // add event listeners
-        //network.on('select', function(params) {
-        //    document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
-        //});
+            };
+            network = new vis.Network(container, data, options);
+            // add event listeners
+            //network.on('select', function(params) {
+            //    document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
+            //});
 
-        //network.redraw();
-    }
-
-    return {
-        network: network,
-        draw: draw
-    };
+            //network.redraw();
+        },
+        render: function () {
+            return React.DOM.div({'ref': 'visDiv', className: 'fillParent'});
+        }
+    });
 
 });
