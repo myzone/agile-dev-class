@@ -14,6 +14,7 @@ module.exports = _.once(function() {
 
   var CourseSchema = new mongoose.Schema({
     name: String,
+	description: String,
     topics: [ TopicSchema ],
     milestones: [ MilestoneSchema ]
   }, { collection: 'courses' });
