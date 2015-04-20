@@ -13,6 +13,7 @@ module.exports = _.once(function(mongoose) {
 
   var DegreeSchema = new mongoose.Schema({
     name: String,
+	description: String,
     courses: [ BriefCourseSchema ]
   }, { collection: 'degrees' });
 
