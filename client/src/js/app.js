@@ -26,7 +26,8 @@ require.config({
         'backbone-react': 'libs/backbone-react-component-0.8.0',
         'three': 'libs/three-PATCHED-r71',
         'script/visjs': 'scripts/visjs',
-        'vis': 'libs/vis.min'
+        'vis': 'libs/vis.min',
+        'intro': 'libs/intro'
     }
 });
 
@@ -50,8 +51,9 @@ define([
     'models/topics',
     'vis',
     'script/visjs',
-    'underscore'],
-    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, vis, visDraw, _) {
+    'underscore',
+    'intro'],
+    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, vis, visDraw, _, intro) {
     var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
     var topicsCollection = new TopicsCollection();
@@ -61,7 +63,7 @@ define([
 
         userName: "myzone",
 
-        stylesheets: ['css/style.css', 'css/bootstrap.css', 'css/simple-sidebar.css', 'css/vis.min.css'],
+        stylesheets: ['css/style.css', 'css/bootstrap.css', 'css/simple-sidebar.css', 'css/vis.min.css', 'css/introjs.css'],
         appLogoUrl: 'resources/open-book-clipart.png',
         appName: 'Degree Overview',
 
@@ -75,6 +77,7 @@ define([
         features: {
             'degree-summary': {
                 name: 'Degree Summary',
+                dataIntro: 'Degree Summary section',
                 content: React.createElement(React.createClass({
                     componentWillMount: function () {
                         degreesCollection.fetch({
@@ -93,6 +96,7 @@ define([
             },
             'course-search': {
                 name: 'Course Search',
+                dataIntro: 'Course search section - for searching courses',
                 content: React.DOM.div({key: 'course-search'}, [
                     React.createElement(SearchView, {
                         key: 'search',
@@ -118,6 +122,7 @@ define([
             },
             'topic-search': {
                 name: 'Topic Search',
+                dataIntro: 'Topic search section - for searching topics',
                 content: React.DOM.div({key: 'topic-search'}, [
                     React.createElement(SearchView, {
                         key: 'search',
@@ -143,17 +148,20 @@ define([
             },
             'user-profile': {
                 name: 'User Profile',
+                dataIntro: 'Information about profile',
                 content: React.DOM.h1({key: 'user-profile'}, 'User Profile'),
                 hidden: true
             },
             '3d': {
                 name: '3d',
+                dataIntro: '3d visualisation topics',
                 content: React.createElement(DegreeView, {model: {name: 'Software engineering', courses: [
                     {name: 'C++'}, {name:'Java'}, {name:"Web dev"}, {name:'Brainfuck'}, {name:'Not Only Brainfuck'}
                 ]}})
             },
             '2d':{
                 name: '2d',
+                dataIntro: '2d visualisation topics',
                 content: React.createElement(visDraw, {})
             }
         },
@@ -178,5 +186,5 @@ define([
     });
 
     React.render(layout, document.getElementById('root'));
-
+    intro().start();
 });
