@@ -6,6 +6,7 @@ require.config({
 
         'views/search': 'views/search',
         'views/collection': 'views/collection',
+        'views/graph': 'views/graph',
 
         'views/degree': 'views/degree',
         'views/course': 'views/course',
@@ -22,11 +23,37 @@ require.config({
         'jquery': 'libs/jquery-2.1.3',
         'underscore': 'libs/underscore-1.8.3',
         'backbone': 'libs/backbone-1.1.2',
-        'backbone-react': 'libs/backbone-react-component-0.8.0'
+        'backbone-react': 'libs/backbone-react-component-0.8.0',
+        'three': 'libs/three-PATCHED-r71',
+        'views/visjs': 'views/visjs',
+        'vis': 'libs/vis.min',
+        'intro': 'libs/intro'
     }
 });
 
-define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header', 'views/layout', 'views/sidebar', 'views/search', 'views/collection', 'views/degree',  'views/course', 'views/topic', 'models/degrees', 'models/courses', 'models/topics'], function (Backbone, React, ReactBootstrap, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection) {
+define([
+    'backbone',
+    'react',
+    'react-bootstrap',
+    'three',
+    'ramda',
+    'jquery',
+    'views/header',
+    'views/layout',
+    'views/sidebar',
+    'views/search',
+    'views/collection',
+    'views/degree',
+    'views/course',
+    'views/topic',
+    'models/degrees',
+    'models/courses',
+    'models/topics',
+    'vis',
+    'views/visjs',
+    'underscore',
+    'intro'],
+    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, vis, VisDraw, _, intro) {
     var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
     var topicsCollection = new TopicsCollection();
@@ -36,7 +63,7 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
 
         userName: "myzone",
 
-        stylesheets: ['css/style.css', 'css/bootstrap.css', 'css/simple-sidebar.css'],
+        stylesheets: ['css/style.css', 'css/bootstrap.css', 'css/simple-sidebar.css', 'css/vis.min.css', 'css/introjs.css'],
         appLogoUrl: 'resources/open-book-clipart.png',
         appName: 'Degree Overview',
 
@@ -50,6 +77,7 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
         features: {
             'degree-summary': {
                 name: 'Degree Summary',
+                dataIntro: 'Degree Summary section',
                 content: React.createElement(React.createClass({
                     componentWillMount: function () {
                         degreesCollection.fetch({
@@ -68,6 +96,7 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
             },
             'course-search': {
                 name: 'Course Search',
+                dataIntro: 'Course search section - for searching courses',
                 content: React.DOM.div({key: 'course-search'}, [
                     React.createElement(SearchView, {
                         key: 'search',
@@ -93,6 +122,7 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
             },
             'topic-search': {
                 name: 'Topic Search',
+                dataIntro: 'Topic search section - for searching topics',
                 content: React.DOM.div({key: 'topic-search'}, [
                     React.createElement(SearchView, {
                         key: 'search',
@@ -118,14 +148,40 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
             },
             'user-profile': {
                 name: 'User Profile',
+                dataIntro: 'Information about profile',
                 content: React.DOM.h1({key: 'user-profile'}, 'User Profile'),
                 hidden: true
+            },
+            '3d': {
+                name: '3d',
+                dataIntro: '3d visualisation topics',
+                content: React.createElement(DegreeView, {model: {name: 'Software engineering', courses: [
+                    {name: 'C++'}, {name:'Java'}, {name:"Web dev"}, {name:'Brainfuck'}, {name:'Not Only Brainfuck'}
+                ]}})
+            },
+            '2d':{
+                name: '2d',
+                dataIntro: '2d visualisation topics',
+                content:React.createElement(React.createClass({
+                        componentWillMount: function () {
+                            topicsCollection.fetch({
+                                reset: true,
+                                wait: true
+                            });
+                        },
+                        render: function () {
+                            return React.createElement(VisDraw, {
+                                key: 'search-result',
+                                collection: topicsCollection
+                            })
+                        }
+                    }), {key: 'topic-2d'})
             }
         },
         activeFeature: null
     });
 
-    application.set('activeFeature', application.get('features')['course-search']);
+    application.set('activeFeature', application.get('features')['2d']);
 
     var header = React.createElement(HeaderView, {
         key: 'header',
@@ -143,4 +199,5 @@ define(['backbone', 'react', 'react-bootstrap', 'ramda', 'jquery', 'views/header
     });
 
     React.render(layout, document.getElementById('root'));
+    //intro().start();
 });

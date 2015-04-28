@@ -28,7 +28,7 @@ define(['react', 'ramda', 'jquery', 'backbone-react', 'backbone'], function (Rea
                 DOM.ul({key: 'sidebar-nav', className: 'sidebar-nav'}, [
                     DOM.li({key: -1, className: 'sidebar-brand'}),
                     R.map(function (feature, i) {
-                        return DOM.li({key: i}, React.createElement(SideBarItem, {
+                        return DOM.li({key: i, 'data-step': i, 'data-intro': feature.dataIntro}, React.createElement(SideBarItem, {
                             active: feature === activeFeature,
                             feature: feature
                         }));

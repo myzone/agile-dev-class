@@ -7,6 +7,11 @@
     width: 159px;
 }
 
+.fillParent {
+    height: 100%;
+    width: 100%;
+}
+
 .nobg {
     background: none !important;
 }
@@ -14,4 +19,10 @@
 .brand-hack {
     margin-left: -15px;
     font-size: 18px
+}
+
+.fullscreen .modal-dialog {
+    width: 80% !important;
+    height: 80% !important;
+    padding: 0;
 }

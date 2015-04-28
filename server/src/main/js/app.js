@@ -21,7 +21,7 @@ server.get(/\/?.*/, restify.serveStatic({
 }));
 
 function onDbConnectionError() {
-  console.log('Can\'nt start the server due to DB connection error.');
+  console.log('Can\'t start the server due to DB connection error.');
 }
 
 function onDbConnected(){
