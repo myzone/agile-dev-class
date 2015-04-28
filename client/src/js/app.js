@@ -25,7 +25,7 @@ require.config({
         'backbone': 'libs/backbone-1.1.2',
         'backbone-react': 'libs/backbone-react-component-0.8.0',
         'three': 'libs/three-PATCHED-r71',
-        'script/visjs': 'scripts/visjs',
+        'views/visjs': 'views/visjs',
         'vis': 'libs/vis.min',
         'intro': 'libs/intro'
     }
@@ -50,10 +50,10 @@ define([
     'models/courses',
     'models/topics',
     'vis',
-    'script/visjs',
+    'views/visjs',
     'underscore',
     'intro'],
-    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, vis, visDraw, _, intro) {
+    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, vis, VisDraw, _, intro) {
     var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
     var topicsCollection = new TopicsCollection();
@@ -162,13 +162,26 @@ define([
             '2d':{
                 name: '2d',
                 dataIntro: '2d visualisation topics',
-                content: React.createElement(visDraw, {})
+                content:React.createElement(React.createClass({
+                        componentWillMount: function () {
+                            topicsCollection.fetch({
+                                reset: true,
+                                wait: true
+                            });
+                        },
+                        render: function () {
+                            return React.createElement(VisDraw, {
+                                key: 'search-result',
+                                collection: topicsCollection
+                            })
+                        }
+                    }), {key: 'topic-2d'})
             }
         },
         activeFeature: null
     });
 
-    application.set('activeFeature', application.get('features')['3d']);
+    application.set('activeFeature', application.get('features')['2d']);
 
     var header = React.createElement(HeaderView, {
         key: 'header',
@@ -186,5 +199,5 @@ define([
     });
 
     React.render(layout, document.getElementById('root'));
-    intro().start();
+    //intro().start();
 });

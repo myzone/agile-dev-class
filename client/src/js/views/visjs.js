@@ -1,5 +1,15 @@
-define(['react', 'react-bootstrap', 'ramda','vis'], function(React, ReactBootstrap, R, vis){
+define(['react',
+        'react-bootstrap',
+        'ramda',
+        'vis',
+        'backbone-react',
+        'backbone'
+        ], function(React, ReactBootstrap, R, vis, BackboneReact, Backbone){
+    topics = [];
+
     return React.createClass({
+        mixins: [Backbone.React.Component.mixin],
+
         componentDidMount: function () {
             network = null;
             var layoutMethod = "direction";
@@ -11,6 +21,13 @@ define(['react', 'react-bootstrap', 'ramda','vis'], function(React, ReactBootstr
                 }
             }
             destroy();
+            //topics = this.props.onSearch('data');
+            topics.push(this.props.model);
+
+            var collection2Read = this.state.collection;
+            console.log(collection2Read);
+
+
             degrees = [
                 {
                     id: '1',
@@ -41,12 +58,13 @@ define(['react', 'react-bootstrap', 'ramda','vis'], function(React, ReactBootstr
                     ]
                 }
             ];
-
             edgesData = {
                 1: {
+                    //from: '55375b1f65b4c34d1e1fd165',
+                    //to: '55375b1f65b4c34d1e1fd166',
                     from: 1,
                     to: 2,
-                    label: 'course'
+                    label: 'topic'
                 },
                 2: {
                     from: 1,
@@ -73,10 +91,16 @@ define(['react', 'react-bootstrap', 'ramda','vis'], function(React, ReactBootstr
             var nodes = [];
             var edges = [];
 
+            //_.each(topics, function (topic){
+            //    nodes.push({
+            //        id: topic._id,
+            //        label: topic.name
+            //    });
+            //});
             _.each(degrees, function (degree) {
                 nodes.push({
                     id: degree.id,
-                    label: degree.degree
+                    label: degree.degree,
                 });
                 _.each(degree.courses, function (course) {
                     nodes.push({
@@ -109,9 +133,26 @@ define(['react', 'react-bootstrap', 'ramda','vis'], function(React, ReactBootstr
 
             var options = {
                 hierarchicalLayout: {
-                    layout: layoutMethod
+                    layout: layoutMethod,
+                    nodeSpacing: 300
                 },
-                edges: {style: "arrow"},
+                dragNodes: false,
+                nodes: {
+                    shape: 'dot',
+                    radius: 20,
+                    color: {
+                        background: "orange",
+                        border: "blue"
+                        //highlight: {
+                        //    background: 'pink',
+                        //    border: 'red'
+                        //}
+                    }
+                },
+                edges: {
+                    style: "arrow"
+                    //color: "red"
+                },
                 smoothCurves: false,
                 width: '100%',
                 height: '600px'
@@ -126,6 +167,8 @@ define(['react', 'react-bootstrap', 'ramda','vis'], function(React, ReactBootstr
             //network.redraw();
         },
         render: function () {
+            var collection2Read = this.state.collection;
+            console.log(collection2Read);
             return React.DOM.div({'ref': 'visDiv', className: 'fillParent'});
         }
     });
