@@ -10,7 +10,11 @@ define(['react',
     return React.createClass({
         mixins: [Backbone.React.Component.mixin],
 
-        componentDidMount: function () {
+        render: function () {
+            var collection2Read = this.state.collection;
+            console.log(collection2Read);
+
+
             network = null;
             var layoutMethod = "direction";
 
@@ -21,154 +25,76 @@ define(['react',
                 }
             }
             destroy();
-            //topics = this.props.onSearch('data');
-            topics.push(this.props.model);
-
-            var collection2Read = this.state.collection;
-            console.log(collection2Read);
-
-
-            degrees = [
-                {
-                    id: '1',
-                    degree: 'Software engineering',
-                    courses: [
-                        {
-                            id: '2',
-                            name: 'Data Science',
-                            topics: [
-                                {
-                                    id: '5',
-                                    name: 'The Data Scientist’s Toolbox'
-                                },
-                                {
-                                    id: '6',
-                                    name: 'R Programming'
-                                }
-                            ]
-                        },
-                        {
-                            id: '3',
-                            name: 'Data Mining'
-                        },
-                        {
-                            id: '4',
-                            name: 'Principles of Computing'
-                        }
-                    ]
-                }
-            ];
-            edgesData = {
-                1: {
-                    //from: '55375b1f65b4c34d1e1fd165',
-                    //to: '55375b1f65b4c34d1e1fd166',
-                    from: 1,
-                    to: 2,
-                    label: 'topic'
-                },
-                2: {
-                    from: 1,
-                    to: 3,
-                    label: 'course'
-                },
-                3: {
-                    from: 1,
-                    to: 4,
-                    label: 'course'
-                },
-                4: {
-                    from: 2,
-                    to: 5,
-                    label: 'topic'
-                },
-                5: {
-                    from: 2,
-                    to: 6,
-                    label: 'topic'
-                }
-            };
 
             var nodes = [];
             var edges = [];
 
-            //_.each(topics, function (topic){
-            //    nodes.push({
-            //        id: topic._id,
-            //        label: topic.name
-            //    });
-            //});
-            _.each(degrees, function (degree) {
-                nodes.push({
-                    id: degree.id,
-                    label: degree.degree,
-                });
-                _.each(degree.courses, function (course) {
+            _.each(collection2Read, function (topic){
+                nodes = [];
+                if(topic.dependent)
+                {
                     nodes.push({
-                        id: course.id,
-                        label: course.name
+                        id: topic.dependent.courseId,
+                        label: topic.dependent.courseName
                     });
-                    _.each(course.topics, function (topic) {
-                        nodes.push({
-                            id: topic.id,
-                            label: topic.name
-                        });
+                    nodes.push({
+                        id: topic.dependent.topicId,
+                        label: topic.dependent.topicName
                     });
-                });
+                }
             });
 
-            _.each(edgesData, function (edge) {
-                edges.push({
-                    from: edge.from,
-                    to: edge.to,
-                    label: edge.label
-                });
+            _.each(collection2Read, function (topic){
+                edges = [];
+                if(topic.dependent)
+                {
+                    edges.push({
+                        from: topic.dependent.courseId,
+                        to: topic.dependent.topicId
+                        //label: depend.label
+                    });
+                }
             });
 
             // create a network
-            var container = React.findDOMNode(this.refs.visDiv);
-            var data = {
-                nodes: nodes,
-                edges: edges
-            };
+            if(React.findDOMNode(this.refs.visDiv)) {
+                var container = React.findDOMNode(this.refs.visDiv);
 
-            var options = {
-                hierarchicalLayout: {
-                    layout: layoutMethod,
-                    nodeSpacing: 300
-                },
-                dragNodes: false,
-                nodes: {
-                    shape: 'dot',
-                    radius: 20,
-                    color: {
-                        background: "orange",
-                        border: "blue"
-                        //highlight: {
-                        //    background: 'pink',
-                        //    border: 'red'
-                        //}
-                    }
-                },
-                edges: {
-                    style: "arrow"
-                    //color: "red"
-                },
-                smoothCurves: false,
-                width: '100%',
-                height: '600px'
 
-            };
-            network = new vis.Network(container, data, options);
-            // add event listeners
-            //network.on('select', function(params) {
-            //    document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
-            //});
+                var data = {
+                    nodes: nodes,
+                    edges: edges
+                };
 
-            //network.redraw();
-        },
-        render: function () {
-            var collection2Read = this.state.collection;
-            console.log(collection2Read);
+                var options = {
+                    hierarchicalLayout: {
+                        layout: layoutMethod,
+                        nodeSpacing: 300
+                    },
+                    dragNodes: false,
+                    nodes: {
+                        shape: 'dot',
+                        radius: 20,
+                        color: {
+                            background: "orange",
+                            border: "blue"
+                            //highlight: {
+                            //    background: 'pink',
+                            //    border: 'red'
+                            //}
+                        }
+                    },
+                    edges: {
+                        style: "arrow"
+                        //color: "red"
+                    },
+                    smoothCurves: false,
+                    width: '100%',
+                    height: '600px'
+
+                };
+                network = new vis.Network(container, data, options);
+            }
             return React.DOM.div({'ref': 'visDiv', className: 'fillParent'});
         }
     });

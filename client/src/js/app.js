@@ -15,6 +15,7 @@ require.config({
         'models/degrees': 'models/degrees-collection',
         'models/courses': 'models/courses-collection',
         'models/topics': 'models/topics-collection',
+        'models/topics-dependencies': 'models/topics-dependencies-collection',
 
         'react': 'libs/react-0.13.1',
         'react-bootstrap': 'libs/react-bootstrap-0.20.3',
@@ -49,14 +50,16 @@ define([
     'models/degrees',
     'models/courses',
     'models/topics',
+    'models/topics-dependencies',
     'vis',
     'views/visjs',
     'underscore',
     'intro'],
-    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, vis, VisDraw, _, intro) {
+    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, TopicsDependenciesCollection, vis, VisDraw, _, intro) {
     var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
     var topicsCollection = new TopicsCollection();
+    var topicsDependenciesCollection = new TopicsDependenciesCollection({ id: '55375b1f65b4c34d1e1fd165' });
 
     var application = new Backbone.Model({
         sideBarVisible: true,
@@ -164,7 +167,7 @@ define([
                 dataIntro: '2d visualisation topics',
                 content:React.createElement(React.createClass({
                         componentWillMount: function () {
-                            topicsCollection.fetch({
+                            topicsDependenciesCollection.fetch({
                                 reset: true,
                                 wait: true
                             });
@@ -172,7 +175,7 @@ define([
                         render: function () {
                             return React.createElement(VisDraw, {
                                 key: 'search-result',
-                                collection: topicsCollection
+                                collection: topicsDependenciesCollection
                             })
                         }
                     }), {key: 'topic-2d'})
