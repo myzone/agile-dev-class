@@ -12,7 +12,7 @@ define(['react',
 
         render: function () {
             var collection2Read = this.state.collection;
-            console.log(collection2Read);
+            //console.log(collection2Read);
 
 
             network = null;
@@ -26,35 +26,44 @@ define(['react',
             }
             destroy();
 
-            var nodes = [];
-            var edges = [];
+            var nodes = [], _tempNodes = [], edges = [], nodesD = [];
 
-            _.each(collection2Read, function (topic){
-                nodes = [];
-                if(topic.dependent)
+            _.each(collection2Read, function (dependence){
+                if(dependence.dependent || dependence.basic)
                 {
-                    nodes.push({
-                        id: topic.dependent.courseId,
-                        label: topic.dependent.courseName
+                    _tempNodes.push({
+                        id: dependence.basic.courseId,
+                        label: dependence.basic.courseName
                     });
-                    nodes.push({
-                        id: topic.dependent.topicId,
-                        label: topic.dependent.topicName
+                    _tempNodes.push({
+                        id: dependence.dependent.courseId,
+                        label: dependence.dependent.courseName
                     });
                 }
             });
+            _.each(_tempNodes, function(node){
+                nodes[node.id] = node;
+            });
+            _.each(nodes, function(node){
+                console.log(node);
+            });
 
-            _.each(collection2Read, function (topic){
+            console.log(nodes);
+
+            _.each(collection2Read, function (dependence){
                 edges = [];
-                if(topic.dependent)
+                if(dependence.dependent || dependence.basic)
                 {
                     edges.push({
-                        from: topic.dependent.courseId,
-                        to: topic.dependent.topicId
+                        from: dependence.basic.courseId,
+                        to: dependence.dependent.courseId
                         //label: depend.label
                     });
                 }
             });
+
+            console.log(edges);
+
 
             // create a network
             if(React.findDOMNode(this.refs.visDiv)) {

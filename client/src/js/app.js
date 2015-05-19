@@ -59,7 +59,7 @@ define([
     var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
     var topicsCollection = new TopicsCollection();
-    var topicsDependenciesCollection = new TopicsDependenciesCollection({ id: '55375b1f65b4c34d1e1fd165' });
+    var topicsDependenciesCollection = new TopicsDependenciesCollection({ id: '555b96ebc0debb2d1ae8a859' });
 
     var application = new Backbone.Model({
         sideBarVisible: true,

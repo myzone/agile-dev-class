@@ -4,7 +4,7 @@ define(['backbone', 'ramda'], function (Backbone, R) {
             this.id = options.id;
         },
         url: function(){
-            return '/v1/topics/'+this.id+'/dependencies';
+            return '/v1/degrees/'+this.id+'/dependencies';
         }
     });
 });
