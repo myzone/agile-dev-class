@@ -26,7 +26,7 @@ define(['react',
             }
             destroy();
 
-            var nodes = [], _tempNodes = [], edges = [], betaNodes = [];
+            var nodes = [], _tempNodes = [], edges = [], _tempEdges = [], betaNodes = [], betaEdges = [];
 
             _.each(collection2Read, function (dependence){
                 if(dependence.dependent || dependence.basic)
@@ -50,11 +50,13 @@ define(['react',
             });
 
 
+            /*******************************/
+
             _.each(collection2Read, function (dependence){
                 //edges = [];
                 if(dependence.dependent || dependence.basic)
                 {
-                    edges.push({
+                    _tempEdges.push({
                         from: dependence.basic.courseId,
                         to: dependence.dependent.courseId
                         //label: depend.label
@@ -62,7 +64,13 @@ define(['react',
                 }
             });
 
-            console.log(edges);
+            _.each(_tempEdges, function(edge){
+                betaEdges[edge.from+'_'+edge.to] = edge;
+            });
+
+            _.mapObject(betaEdges, function(edge){
+                edges.push(edge);
+            });
 
 
             // create a network
