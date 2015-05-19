@@ -26,7 +26,7 @@ define(['react',
             }
             destroy();
 
-            var nodes = [], _tempNodes = [], edges = [], nodesD = [];
+            var nodes = [], _tempNodes = [], edges = [], betaNodes = [];
 
             _.each(collection2Read, function (dependence){
                 if(dependence.dependent || dependence.basic)
@@ -42,16 +42,16 @@ define(['react',
                 }
             });
             _.each(_tempNodes, function(node){
-                nodes[node.id] = node;
-            });
-            _.each(nodes, function(node){
-                console.log(node);
+                betaNodes[node.id] = node;
             });
 
-            console.log(nodes);
+            _.mapObject(betaNodes, function(node){
+                nodes.push(node);
+            });
+
 
             _.each(collection2Read, function (dependence){
-                edges = [];
+                //edges = [];
                 if(dependence.dependent || dependence.basic)
                 {
                     edges.push({
@@ -78,7 +78,8 @@ define(['react',
                 var options = {
                     hierarchicalLayout: {
                         layout: layoutMethod,
-                        nodeSpacing: 300
+                        levelSeparation: 150,
+                        nodeSpacing: 3000
                     },
                     dragNodes: false,
                     nodes: {
