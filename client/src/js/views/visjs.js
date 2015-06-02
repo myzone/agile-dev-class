@@ -85,33 +85,43 @@ define(['react',
 
                 var options = {
                     hierarchicalLayout: {
+                        enabled: true,
                         layout: layoutMethod,
-                        levelSeparation: 150,
+                        levelSeparation: 350,
+                        direction: 'LR',
                         nodeSpacing: 3000
                     },
                     dragNodes: false,
                     nodes: {
+                        borderWidth: 0.1,
                         shape: 'dot',
-                        radius: 20,
+                        radius: 15,
+                        fontSize: 14,
+                        scaleFontWithValue: true,
+                        fontDrawThreshold: 11,
                         color: {
-                            background: "orange",
-                            border: "blue"
-                            //highlight: {
-                            //    background: 'pink',
-                            //    border: 'red'
-                            //}
+                            background: "#ABABAB",
+                            border: "#337AB7",
+                            highlight: {
+                                background: '#D1D1D1'
+                                //border: 'red'
+                            }
                         }
                     },
                     edges: {
-                        style: "arrow"
-                        //color: "red"
+                        style: "arrow",
+                        color: "#999AFD"
                     },
                     smoothCurves: false,
-                    width: '100%',
+                    width: '1400px',
                     height: '600px'
 
                 };
                 network = new vis.Network(container, data, options);
+
+                network.on('hoverNode', function (properties) {
+                    console.log(properties);
+                });
             }
             return React.DOM.div({'ref': 'visDiv', className: 'fillParent'});
         }
