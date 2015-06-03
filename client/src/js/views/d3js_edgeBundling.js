@@ -60,7 +60,11 @@ define(['react',
 
     return React.createClass({
         mixins: [Backbone.React.Component.mixin],
-
+        shouldComponentUpdate: function(nextProps, nextState) {
+          //This is temporary solution
+          //We need to determine whether state was changed or not correctly
+          return nextState.collection.length != this.state.collection.length;
+        },
         render: function () {
             var collection2Read = this.state.collection;
 
