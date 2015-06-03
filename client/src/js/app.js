@@ -26,9 +26,6 @@ require.config({
         'backbone': 'libs/backbone-1.1.2',
         'backbone-react': 'libs/backbone-react-component-0.8.0',
         'three': 'libs/three-PATCHED-r71',
-        'views/visjs': 'views/visjs',
-        'vis': 'libs/vis.min',
-        'views/tilfordTree': 'views/d3js_tilfordTree',
         'views/edgeBundling': 'views/d3js_edgeBundling',
         'd3': 'libs/d3.min',
         'intro': 'libs/intro'
@@ -54,13 +51,10 @@ define([
     'models/courses',
     'models/topics',
     'models/topics-dependencies',
-    'vis',
-    'views/visjs',
-    'views/tilfordTree',
     'views/edgeBundling',
     'underscore',
     'intro'],
-    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, TopicsDependenciesCollection, vis, VisDraw, D3jsTeelfordTree, D3jsEdgeBundling,_, intro) {
+    function (Backbone, React, ReactBootstrap, Three, R, $, HeaderView, LayoutView, SidebarView, SearchView, CollectionView, DegreeView, CourseView, TopicView, DegreeCollection, CoursesCollection, TopicsCollection, TopicsDependenciesCollection, D3jsEdgeBundling, _, intro) {
     var degreesCollection = new DegreeCollection();
     var coursesCollection = new CoursesCollection();
     var topicsCollection = new TopicsCollection();
@@ -160,49 +154,6 @@ define([
                 content: React.DOM.h1({key: 'user-profile'}, 'User Profile'),
                 hidden: true
             },
-            '3d': {
-                name: '3d',
-                dataIntro: '3d visualisation topics',
-                content: React.createElement(DegreeView, {model: {name: 'Software engineering', courses: [
-                    {name: 'C++'}, {name:'Java'}, {name:"Web dev"}, {name:'Brainfuck'}, {name:'Not Only Brainfuck'}
-                ]}})
-            },
-            '2d':{
-                name: '2d',
-                dataIntro: '2d visualisation topics',
-                content:React.createElement(React.createClass({
-                        componentWillMount: function () {
-                            topicsDependenciesCollection.fetch({
-                                reset: true,
-                                wait: true
-                            });
-                        },
-                        render: function () {
-                            return React.createElement(VisDraw, {
-                                key: 'search-result',
-                                collection: topicsDependenciesCollection
-                            })
-                        }
-                    }), {key: 'topic-2d'})
-            },
-            'tilford_Tree':{
-                name: 'd3js - Tilford Tree',
-                dataIntro: 'd3js visualisation topics',
-                content:React.createElement(React.createClass({
-                    componentWillMount: function () {
-                        topicsDependenciesCollection.fetch({
-                            reset: true,
-                            wait: true
-                        });
-                    },
-                    render: function () {
-                        return React.createElement(D3jsTeelfordTree, {
-                            key: 'search-result',
-                            collection: topicsDependenciesCollection
-                        })
-                    }
-                }), {key: 'topic-2d'})
-            },
             'edge_bundling':{
                 name: 'd3js - edge bundling',
                 dataIntro: 'd3js visualisation topics',
@@ -225,7 +176,7 @@ define([
         activeFeature: null
     });
 
-    application.set('activeFeature', application.get('features')['2d']);
+    application.set('activeFeature', application.get('features')['degree-summary']);
 
     var header = React.createElement(HeaderView, {
         key: 'header',
