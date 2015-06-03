@@ -5,33 +5,7 @@ define(['react',
     'backbone-react',
     'backbone'
 ], function(React, ReactBootstrap, R, d3, BackboneReact, Backbone){
-    topics = [];
-    packages = {
-
-        // Lazily construct the package hierarchy from class names.
-        root: function(classes) {
-            var map = {};
-
-            function find(name, data) {
-                var node = map[name], i;
-                if (!node) {
-                    node = map[name] = data || {name: name, children: []};
-                    if (name.length) {
-                        node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
-                        node.parent.children.push(node);
-                        node.key = name.substring(i + 1);
-                    }
-                }
-                return node;
-            }
-
-            classes.forEach(function(d) {
-                find(d.name, d);
-            });
-
-            return map[""];
-        },
-
+    courses = {
         // Return a list of imports for the given array of nodes.
         imports: function(nodes) {
             var map = {},
@@ -39,13 +13,13 @@ define(['react',
 
             // Compute a map from name to node.
             nodes.forEach(function(d) {
-                map[d.name] = d;
+                map[d.key] = d;
             });
 
             // For each import, construct a link from the source to target node.
             nodes.forEach(function(d) {
                 if (d.imports) d.imports.forEach(function(i) {
-                    imports.push({source: map[d.name], target: map[i]});
+                    imports.push({source: map[d.key], target: map[i]});
                 });
             });
 
@@ -53,11 +27,7 @@ define(['react',
         }
 
     };
-
-    var nodes = [], _tempNodes = [], edges = [], _tempEdges = [], betaNodes = [], betaEdges = [];
-
-
-
+  
     return React.createClass({
         mixins: [Backbone.React.Component.mixin],
         shouldComponentUpdate: function(nextProps, nextState) {
@@ -66,55 +36,6 @@ define(['react',
           return nextState.collection.length != this.state.collection.length;
         },
         render: function () {
-            var collection2Read = this.state.collection;
-
-            _.each(collection2Read, function (dependence){
-                if(dependence.dependent || dependence.basic)
-                {
-                    _tempNodes.push({
-                        id: dependence.basic.courseId,
-                        label: dependence.basic.courseName
-                    });
-                    _tempNodes.push({
-                        id: dependence.dependent.courseId,
-                        label: dependence.dependent.courseName
-                    });
-                }
-            });
-            _.each(_tempNodes, function(node){
-                betaNodes[node.id] = node;
-            });
-
-            _.mapObject(betaNodes, function(node){
-                nodes.push(node);
-            });
-
-
-            /*******************************/
-
-            _.each(collection2Read, function (dependence){
-                //edges = [];
-                if(dependence.dependent || dependence.basic)
-                {
-                    _tempEdges.push({
-                        from: dependence.basic.courseId,
-                        to: dependence.dependent.courseId
-                        //label: depend.label
-                    });
-                }
-            });
-
-            _.each(_tempEdges, function(edge){
-                betaEdges[edge.from+'_'+edge.to] = edge;
-            });
-
-            _.mapObject(betaEdges, function(edge){
-                edges.push(edge);
-            });
-
-            nodesObject = [];
-
-
 
             var w = 1280,
                 h = 800,
@@ -157,10 +78,10 @@ define(['react',
                 .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
                 .on("mousedown", mousedown);
 
-            d3.json("js/views/flare-imports.json", function(classes) {
-                var nodes = cluster.nodes(packages.root(classes)),
-                    links = packages.imports(nodes),
-                    splines = bundle(links);
+            d3.json("/v1/degree_deps", function(root) {
+                var nodes = cluster.nodes(root);
+                var links = courses.imports(nodes);
+                var splines = bundle(links);
 
                 var path = svg.selectAll("path.link")
                     .data(links)
@@ -179,7 +100,7 @@ define(['react',
                     .attr("dy", ".31em")
                     .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
                     .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                    .text(function(d) { return d.key; })
+                    .text(function(d) { return d.name; })
                     .on("mouseover", mouseover)
                     .on("mouseout", mouseout);
 
